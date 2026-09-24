@@ -295,7 +295,7 @@
     <div class="panel">
       <h3 style="margin-bottom:6px">Recent results</h3>
       <p style="color:var(--muted);margin-bottom:14px;font-size:0.88rem">Your latest bloodwork and latest imaging/other test result, at a glance.</p>
-      <div id="recent-results-wrap"><div class="empty-state">Nothing logged yet — add a result using Add from Email below, or in My Health.</div></div>
+      <div id="recent-results-wrap"><div class="empty-state">Nothing yet. Share a lab report from Labcorp to this app, or pick the PDF below.</div></div>
       <button type="button" class="ghost" data-goto="tracker" style="margin-top:14px">View full history</button>
     </div>
     <div class="panel" id="labpdf-panel">
@@ -430,7 +430,7 @@
       <div class="rec-list" id="list-medications"></div>
     </div>
     <div class="panel">
-      <div class="sec-head"><h3>Log history / Lab work</h3><button type="button" class="add-btn" data-add="logs">+ Add</button></div>
+      <div class="sec-head"><h3>Log history / Lab work</h3><label for="labpdf-input" class="add-btn" role="button" tabindex="0" style="cursor:pointer">+ Add lab report (PDF)</label></div>
       <p class="sec-desc">Your blood counts over time: WBC, ANC, platelets and hemoglobin. Values outside the usual adult range are highlighted.</p>
       <div style="margin-bottom:12px;display:flex;gap:10px;flex-wrap:wrap">
         <button type="button" class="ghost" id="export-csv-btn">Export CSV</button>
@@ -1039,7 +1039,7 @@
     if (!wrap) return;
     const lastLog = [...store.logs].sort((a, b) => (a.date > b.date ? -1 : 1))[0];
     const lastTest = [...store.testResults].sort((a, b) => (a.date > b.date ? -1 : 1))[0];
-    if (!lastLog && !lastTest) { wrap.innerHTML = '<div class="empty-state">Nothing logged yet — add a result using Add from Email below, or in My Health.</div>'; return; }
+    if (!lastLog && !lastTest) { wrap.innerHTML = '<div class="empty-state">Nothing yet. Share a lab report from Labcorp to this app, or pick the PDF below.</div>'; return; }
     let html = '';
     if (lastLog) {
       const cell = (field, label, unit) => {
@@ -1966,7 +1966,7 @@
       },
     },
     logs: {
-      idKey: 'log', noun: 'lab entry', empty: 'No blood count results yet. Add one after each lab draw.',
+      idKey: 'log', noun: 'lab entry', empty: 'No lab reports yet. Tap "+ Add lab report (PDF)" or share a report from Labcorp to this app.',
       fields: [F('date', 'Date', 'date', { required: true, wide: true }), F('wbc', 'WBC (x10⁹/L)', 'number', { step: 'any' }), F('anc', 'ANC (x10⁹/L)', 'number', { step: 'any' }),
         F('platelets', 'Platelets (x10⁹/L)', 'number', { step: 'any' }), F('hemoglobin', 'Hemoglobin (g/dL)', 'number', { step: 'any' }),
         F('symptoms', 'How you felt', 'text', { wide: true }), F('notes', 'Notes', 'textarea', { wide: true })],
@@ -2432,6 +2432,18 @@
     return rec;
   }
 
+  function showToast(msg) {
+    let t = document.getElementById('lc-toast');
+    if (!t) {
+      t = document.createElement('div'); t.id = 'lc-toast'; t.setAttribute('role', 'status');
+      t.style.cssText = 'position:fixed;left:12px;right:12px;bottom:calc(16px + env(safe-area-inset-bottom, 0px));z-index:9998;max-width:560px;margin:0 auto;background:#1f3d36;color:#fff;padding:12px 16px;border-radius:12px;font-size:0.92rem;line-height:1.4;box-shadow:0 6px 20px rgba(0,0,0,.25)';
+      t.addEventListener('click', () => { t.style.display = 'none'; });
+      document.body.appendChild(t);
+    }
+    t.textContent = msg; t.style.display = 'block';
+    clearTimeout(showToast._h); showToast._h = setTimeout(() => { t.style.display = 'none'; }, msg.length > 60 ? 8000 : 4000);
+  }
+
   // ---------- lab report PDF reader (runs on this device) ----------
   let pdfjsPromise = null;
   function loadPdfJs() {
@@ -2494,7 +2506,9 @@
   }
   (function initLabPdf() {
     const input = document.getElementById('labpdf-input');
-    const status = document.getElementById('labpdf-status');
+    const statusEl = document.getElementById('labpdf-status');
+    // Messages show on Home and as a pop-up note, so you see them from any page.
+    const status = { set textContent(m) { if (statusEl) statusEl.textContent = m; showToast(m); } };
     if (!input) return;
     const label = document.querySelector('label[for="labpdf-input"]');
     if (label) label.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); input.click(); } });
@@ -2524,8 +2538,17 @@
       const found = ['wbc', 'anc', 'platelets', 'hemoglobin'].filter(k => v[k] !== undefined);
       const saved = `Saved the whole report${rows.length ? ` (${rows.length} results)` : ''} under My Health → Test results.`;
       if (found.length) {
-        status.textContent = `${saved} Also found ${found.length} of 4 blood counts for your chart. Check them and the date, then tap Save.`;
-        openRecordEditor('logs', null, { date, wbc: v.wbc ?? null, anc: v.anc ?? null, platelets: v.platelets ?? null, hemoglobin: v.hemoglobin ?? null, notes: `From ${v.source ? v.source + ' ' : ''}report (full report in Test results)` });
+        // Save the counts straight to the chart. Same date already there? Overwrite it instead of adding a duplicate.
+        ensureCollection('logs');
+        const note = `From ${v.source ? v.source + ' ' : ''}report (full report in Test results)`;
+        let entry = store.logs.find(l => l.date === date);
+        const replaced = !!entry;
+        if (!entry) { entry = { id: store.nextIds.log++, date, wbc: null, anc: null, platelets: null, hemoglobin: null, symptoms: '', notes: '' }; store.logs.push(entry); }
+        found.forEach(k => { entry[k] = v[k]; });
+        if (!replaced || !entry.notes) entry.notes = note;
+        saveStore();
+        renderAll();
+        status.textContent = `${saved} Blood counts ${replaced ? 'updated' : 'added'} for ${fmtDate(date)} (${found.map(k => ({ wbc: 'WBC', anc: 'ANC', platelets: 'Platelets', hemoglobin: 'Hgb' }[k])).join(', ')}). Tap Edit on it anytime to change something.`;
       } else {
         status.textContent = saved;
       }
