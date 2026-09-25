@@ -234,6 +234,9 @@
   .rec-side .dir-actions { justify-content: flex-end; }
   .rec-edit { background: none; border: 1px solid var(--border); color: var(--text); border-radius: 8px; padding: 5px 12px; font: inherit; font-size: 0.82rem; cursor: pointer; }
   .rec-edit:hover { border-color: var(--accent); }
+  .rec-btns { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+  .rec-del { background: none; border: 1px solid var(--border); color: var(--warn); border-radius: 8px; padding: 5px 12px; font: inherit; font-size: 0.82rem; cursor: pointer; }
+  .rec-del:hover { border-color: var(--warn); background: var(--warn-soft); }
   .rec-more { font-size: 0.82rem; color: var(--accent); background: none; border: none; padding: 4px 0 0; cursor: pointer; font: inherit; font-size: 0.82rem; text-decoration: underline; }
   @media (max-width: 520px) {
     .rec-card.has-actions { flex-wrap: wrap; }
@@ -456,12 +459,12 @@
     </div>
     <div class="panel">
       <div class="sec-head"><h3>Log history / Lab work</h3><label for="labpdf-input" class="add-btn" role="button" tabindex="0" style="cursor:pointer">+ Add lab report (PDF)</label></div>
-      <p class="sec-desc">Your blood counts over time: WBC, ANC, platelets and hemoglobin. Values outside the usual adult range are highlighted.</p>
+      <p class="sec-desc">Your latest lab report. Tap Look up past results to see older ones.</p>
       <div class="rec-list" id="list-logs"></div>
     </div>
     <div class="panel">
       <div class="sec-head"><h3>Test results</h3><button type="button" class="add-btn" data-add="testResults">+ Add</button></div>
-      <p class="sec-desc">Imaging, biopsies, pathology, BCR-ABL and other reports, newest first.</p>
+      <p class="sec-desc">Imaging, biopsies, pathology, BCR-ABL and other reports. Your latest is shown; older ones are under Look up past results.</p>
       <div class="rec-list" id="list-testResults"></div>
     </div>
     <div class="panel">
@@ -2160,7 +2163,7 @@
         ${c.html || ''}${long}${lines ? `<div class="rec-lines">${lines}</div>` : ''}
       </div>
       <div class="rec-side">
-        <button type="button" class="rec-edit" data-col="${col}" data-id="${item.id}" aria-label="Edit ${escapeHtml(c.title || SCHEMAS[col].noun)}">Edit</button>
+        <div class="rec-btns"><button type="button" class="rec-edit" data-col="${col}" data-id="${item.id}" aria-label="Edit ${escapeHtml(c.title || SCHEMAS[col].noun)}">Edit</button><button type="button" class="rec-del" data-col="${col}" data-id="${item.id}" aria-label="Delete ${escapeHtml(c.title || SCHEMAS[col].noun)}">Delete</button></div>
         ${actions.length ? `<div class="dir-actions">${actions.join('')}</div>` : ''}
       </div>
     </div>`;
@@ -2190,12 +2193,49 @@
   });
 
   // names the rest of the app already calls
-  function renderLogTable() { renderCollection('logs'); }
+  // Latest item shown; everything older sits behind a "Look up past results" button.
+  const pastOpen = new Set();
+  const isLabReport = t => !!t.pdfId || t.type === 'Lab / bloodwork';
+  function renderLatestWithPast(wrapId, key, groups, emptyMsg) {
+    const wrap = document.getElementById(wrapId);
+    if (!wrap) return;
+    const all = [];
+    groups.forEach(g => g.items.forEach(it => all.push({ col: g.col, it })));
+    all.sort((a, b) => ((a.it.date || '') > (b.it.date || '') ? -1 : 1));
+    if (!all.length) { wrap.innerHTML = `<div class="empty-state">${escapeHtml(emptyMsg)}</div>`; return; }
+    const latest = all[0], past = all.slice(1);
+    let html = recordCard(latest.col, latest.it);
+    if (past.length) {
+      const open = pastOpen.has(key);
+      html += `<button type="button" class="ghost past-toggle" data-past="${key}" style="margin-top:10px">${open ? 'Hide past results' : `🔎 Look up past results (${past.length})`}</button>`;
+      if (open) html += `<div style="margin-top:10px">${past.map(x => recordCard(x.col, x.it)).join('')}</div>`;
+    }
+    wrap.innerHTML = html;
+  }
+  document.addEventListener('click', e => {
+    const b = e.target.closest('.past-toggle');
+    if (!b) return;
+    const k = b.dataset.past;
+    if (pastOpen.has(k)) pastOpen.delete(k); else pastOpen.add(k);
+    k === 'lab' ? renderLogTable() : renderTestResults();
+  });
+  function renderLogTable() {
+    ensureCollection('logs'); ensureCollection('testResults');
+    const reports = store.testResults.filter(isLabReport);
+    const reportDates = new Set(reports.map(r => r.date));
+    // Blood-count entries that already have a full report on the same date are covered by that report.
+    const countsOnly = store.logs.filter(l => !reportDates.has(l.date));
+    renderLatestWithPast('list-logs', 'lab', [{ col: 'testResults', items: reports }, { col: 'logs', items: countsOnly }],
+      'No lab reports yet. Tap "+ Add lab report (PDF)" or share a report from Labcorp to this app.');
+  }
   function renderAppointments() { renderCollection('appointments'); }
   function renderInsurance() { renderCollection('insurance'); }
   function renderDoctors() { renderCollection('doctors'); }
   function renderVisits() { renderCollection('visits'); }
-  function renderTestResults() { renderCollection('testResults'); }
+  function renderTestResults() {
+    ensureCollection('testResults');
+    renderLatestWithPast('list-testResults', 'tests', [{ col: 'testResults', items: store.testResults.filter(t => !isLabReport(t)) }], 'No other test results yet.');
+  }
   function renderSymptoms() { renderCollection('symptoms'); }
   function renderMedications() { renderCollection('medications'); }
   function renderPharmacies() { renderCollection('pharmacies'); }
@@ -2328,6 +2368,20 @@
     document.addEventListener('click', e => {
       const addBtn = e.target.closest('[data-add]');
       if (addBtn && SCHEMAS[addBtn.dataset.add]) { open(addBtn.dataset.add); return; }
+      const del = e.target.closest('.rec-del');
+      if (del) {
+        const col = del.dataset.col, id = +del.dataset.id;
+        const item = (store[col] || []).find(x => x.id === id);
+        if (!item) return;
+        const name = SCHEMAS[col].card(item).title || SCHEMAS[col].noun;
+        if (!confirm(`Delete ${name}? This can't be undone.`)) return;
+        store[col] = store[col].filter(x => x.id !== id);
+        if (item.pdfId) pdfFiles.del(item.pdfId).catch(() => {});
+        saveStore();
+        renderAll();
+        showToast(`Deleted ${name}.`);
+        return;
+      }
       const edit = e.target.closest('.rec-edit');
       if (edit) { open(edit.dataset.col, Number(edit.dataset.id)); return; }
       const more = e.target.closest('.rec-more');
