@@ -406,17 +406,6 @@
       <div id="due-today-wrap"><div class="empty-state">No medications tracked yet.</div></div>
     </div>
     <div class="panel">
-      <h3 style="margin-bottom:6px">Quick Links</h3>
-      <p style="color:var(--muted);margin-bottom:14px">One place for every website you need — doctor portals, lab result sites (like MyChart, Quest, or LabCorp), pharmacy sites, insurance sites, anything. Add a website, a phone number, or both. Tap a website to open it, or the 📞 number to call.</p>
-      <form id="link-form" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px">
-        <input type="text" id="link-name" placeholder="Name (e.g. MyChart, Quest Labs)" style="flex:1;min-width:160px;margin:0">
-        <input type="text" id="link-url" placeholder="Website address (optional)" style="flex:1;min-width:160px;margin:0">
-        <input type="tel" id="link-phone" placeholder="Phone number (optional)" inputmode="tel" style="flex:1;min-width:160px;margin:0">
-        <button type="submit" class="primary" style="white-space:nowrap">Add link</button>
-      </form>
-      <div id="link-list-wrap"><div class="empty-state">No links added yet.</div></div>
-    </div>
-    <div class="panel">
       <h3 style="margin-bottom:6px">Data &amp; backup</h3>
       <p style="color:var(--muted);margin-bottom:14px">Everything you enter is stored only in this browser. Download a backup periodically, or if you're moving to a new device — you can restore it here or in a fresh copy of this app.</p>
       <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
@@ -561,8 +550,8 @@
   <div class="view" id="view-directory">
     <h2>Directory</h2>
     <div class="panel">
-      <div class="sec-head"><h3>Every number in one place</h3><button type="button" class="add-btn" data-add="places">+ Add a place</button></div>
-      <p class="sec-desc" style="margin-bottom:0">Doctors, labs, hospitals, clinics, pharmacies, insurance, case managers, organizations, and support contacts. Tap a number to call it or a website to open it. Use Add a place for labs, hospitals, urgent care, and anywhere else.</p>
+      <div class="sec-head"><h3>Every number in one place</h3><div style="display:flex;gap:8px;flex-wrap:wrap"><button type="button" class="add-btn" data-add="quickLinks">+ Add a link</button><button type="button" class="add-btn" data-add="places">+ Add a place</button></div></div>
+      <p class="sec-desc" style="margin-bottom:0">Doctors, labs, hospitals, clinics, pharmacies, insurance, case managers, organizations, and support contacts. Tap a number to call it or a website to open it. Use Add a link for websites and phone numbers like patient portals, MyChart, or Labcorp. Use Add a place for labs, hospitals, urgent care, and anywhere else.</p>
     </div>
     <div class="panel" id="directory-wrap"></div>
   </div>
@@ -1191,6 +1180,7 @@
   }
   function renderQuickLinks() {
     const wrap = document.getElementById('link-list-wrap');
+    if (!wrap) return;
     store.quickLinks.forEach(l => { if (l.url && !l.phone && /^[\d\s().+-]{7,}$/.test(l.url) && l.url.replace(/\D/g, '').length >= 7) { l.phone = l.url; l.url = ''; } });
     const all = [...BUILT_IN_LINKS.map(l => ({ ...l, builtIn: true })), ...store.quickLinks];
     if (!all.length) { wrap.innerHTML = '<div class="empty-state">No links added yet.</div>'; return; }
@@ -1207,7 +1197,7 @@
       renderQuickLinks();
     }));
   }
-  document.getElementById('link-form').addEventListener('submit', e => {
+  document.getElementById('link-form')?.addEventListener('submit', e => {
     e.preventDefault();
     const nameInput = document.getElementById('link-name');
     const urlInput = document.getElementById('link-url');
@@ -2163,6 +2153,13 @@
         F('phone', 'Phone', 'tel'), F('website', 'Website', 'text', { inputmode: 'url' }), F('helps', 'What they help with', 'text', { wide: true })],
       card: o => ({ title: o.name, sub: [o.type, o.helps].filter(Boolean).join(', '), phone: o.phone, website: o.website }),
     },
+    quickLinks: {
+      idKey: 'link', noun: 'link', empty: '',
+      fields: [F('name', 'Name', 'text', { required: true, placeholder: 'e.g. MyChart, Labcorp, Medicare' }), F('url', 'Website', 'text', { wide: true, inputmode: 'url', placeholder: 'optional' }),
+        F('phone', 'Phone', 'tel', { placeholder: 'optional' })],
+      sort: (a, b) => String(a.name || '').localeCompare(String(b.name || '')),
+      card: l => ({ title: l.name, phone: l.phone, website: l.url }),
+    },
     places: {
       idKey: 'place', noun: 'place', empty: '',
       fields: [F('name', 'Name', 'text', { required: true, placeholder: 'e.g. Green Medical' }), F('kind', 'Kind of place', 'select', { options: ['Lab', 'Hospital', 'Clinic / medical office', 'Urgent care', 'Imaging center', 'Other'] }),
@@ -2292,6 +2289,15 @@
     const groups = [];
     const add = (label, col, items) => { if (items && items.length) groups.push(`<div class="dir-group"><h4>${escapeHtml(label)}</h4>${items.map(it => recordCard(col, it, { directory: true })).join('')}</div>`); };
     add('Doctors & providers', 'doctors', store.doctors);
+    ensureCollection('quickLinks');
+    if (!store.linksSeeded) {
+      // Medicare / Medi-Cal used to be fixed links; now they're normal entries you can edit or delete.
+      [{ name: 'Medicare', url: 'https://www.medicare.gov', phone: '800-633-4227' }, { name: 'Medi-Cal', url: 'https://www.dhcs.ca.gov/services/medi-cal', phone: '800-541-5555' }]
+        .forEach(b => { if (!store.quickLinks.some(l => l.name === b.name)) store.quickLinks.push(Object.assign({ id: store.nextIds.link++ }, b)); });
+      store.linksSeeded = true; saveStore();
+    }
+    store.quickLinks.forEach(l => { if (l.url && !l.phone && /^[\d\s().+-]{7,}$/.test(l.url) && l.url.replace(/\D/g, '').length >= 7) { l.phone = l.url; l.url = ''; } });
+    add('Websites & quick links', 'quickLinks', [...store.quickLinks].sort(SCHEMAS.quickLinks.sort));
     KIND_ORDER.forEach(kind => add(KIND_LABEL[kind], 'places', (store.places || []).filter(pl => (KIND_ORDER.includes(pl.kind) ? pl.kind : 'Other') === kind)));
     add('Pharmacies', 'pharmacies', store.pharmacies);
     add('Insurance', 'insurance', store.insurance);
