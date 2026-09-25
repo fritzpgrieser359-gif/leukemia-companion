@@ -151,7 +151,7 @@
   }
   .dir-actions a {
     display: inline-flex; align-items: center; gap: 5px; background: var(--accent-soft); color: var(--accent-dark);
-    border-radius: 8px; padding: 7px 12px; font-size: 0.83rem; font-weight: 600; text-decoration: none; white-space: nowrap;
+    border-radius: 10px; padding: 10px 14px; min-height: 44px; font-size: 0.98rem; font-weight: 600; text-decoration: none; white-space: nowrap;
   }
   .dir-actions a:hover { background: var(--accent); color: #fff; }
   .post-item .meta { color: var(--muted); font-size: 0.85rem; }
@@ -232,10 +232,10 @@
   .rec-vals .out-of-range { color: var(--warn); font-weight: 600; }
   .rec-side { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; flex-shrink: 0; }
   .rec-side .dir-actions { justify-content: flex-end; }
-  .rec-edit { background: none; border: 1px solid var(--border); color: var(--text); border-radius: 8px; padding: 5px 12px; font: inherit; font-size: 0.82rem; cursor: pointer; }
+  .rec-edit { background: none; border: 1px solid var(--border); color: var(--text); border-radius: 10px; padding: 8px 14px; min-height: 40px; font: inherit; font-size: 0.92rem; cursor: pointer; }
   .rec-edit:hover { border-color: var(--accent); }
   .rec-btns { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
-  .rec-del { background: none; border: 1px solid var(--border); color: var(--warn); border-radius: 8px; padding: 5px 12px; font: inherit; font-size: 0.82rem; cursor: pointer; }
+  .rec-del { background: none; border: 1px solid var(--border); color: var(--warn); border-radius: 10px; padding: 8px 14px; min-height: 40px; font: inherit; font-size: 0.92rem; cursor: pointer; }
   .rec-del:hover { border-color: var(--warn); background: var(--warn-soft); }
   .rec-more { font-size: 0.82rem; color: var(--accent); background: none; border: none; padding: 4px 0 0; cursor: pointer; font: inherit; font-size: 0.82rem; text-decoration: underline; }
   @media (max-width: 520px) {
@@ -1087,6 +1087,47 @@
     const text = encodeURIComponent(`Take ${med.name}${med.dose ? ' (' + med.dose + ')' : ''}`);
     const details = encodeURIComponent([med.frequency, med.notes].filter(Boolean).join(' — ') || 'Medication reminder from Leukemia Companion');
     return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${text}&dates=${fmt(dt)}/${fmt(endDt)}&details=${details}${recur}`;
+  }
+  const IS_ANDROID = /Android/i.test(navigator.userAgent);
+  // Android: open the phone's Calendar app on a full-size "new event" screen (falls back to the Google Calendar web page).
+  function calIntent({ title, begin, end, allDay, rrule, location, description, fallback }) {
+    const e = encodeURIComponent;
+    let u = 'intent:#Intent;action=android.intent.action.INSERT;type=vnd.android.cursor.item/event;';
+    u += 'S.title=' + e(title) + ';l.beginTime=' + begin + ';l.endTime=' + end + ';';
+    if (allDay) u += 'B.allDay=true;';
+    if (rrule) u += 'S.rrule=' + e(rrule) + ';';
+    if (location) u += 'S.eventLocation=' + e(location) + ';';
+    if (description) u += 'S.description=' + e(description) + ';';
+    if (fallback && fallback !== '#') u += 'S.browser_fallback_url=' + e(fallback) + ';';
+    return u + 'end';
+  }
+  function medCalLink(med) {
+    const web = gcalUrl(med);
+    if (!web) return null;
+    if (!IS_ANDROID) return web;
+    const st = new Date(`${med.start || todayIso()}T${med.reminderTime}:00`);
+    if (isNaN(st.getTime())) return web;
+    let rrule = '';
+    if (med.repeat === 'DAILY' || med.repeat === 'WEEKLY') {
+      rrule = 'FREQ=' + med.repeat;
+      if (med.end) rrule += ';UNTIL=' + med.end.replace(/-/g, '') + 'T235959Z';
+    }
+    return calIntent({ title: `Take ${med.name}${med.dose ? ' (' + med.dose + ')' : ''}`, begin: st.getTime(), end: st.getTime() + 15 * 60000,
+      rrule, description: [med.frequency, med.notes].filter(Boolean).join(' — ') || 'Medication reminder from Leukemia Companion', fallback: web });
+  }
+  function apptCalLink(a) {
+    const web = apptCalUrl(a);
+    if (!IS_ANDROID) return web;
+    const title = 'Appointment' + (a.provider ? ' – ' + a.provider : '');
+    const description = [a.notes, 'From Leukemia Companion'].filter(Boolean).join('\n');
+    if (a.time) {
+      const st = new Date(`${a.date}T${a.time}:00`);
+      if (isNaN(st.getTime())) return web;
+      return calIntent({ title, begin: st.getTime(), end: st.getTime() + 3600000, location: a.location, description, fallback: web });
+    }
+    const d0 = Date.parse(a.date + 'T00:00:00Z');
+    if (isNaN(d0)) return web;
+    return calIntent({ title, begin: d0, end: d0 + 86400000, allDay: true, location: a.location, description, fallback: web });
   }
   function fmtTime(t) {
     const m = String(t || '').match(/^(\d{1,2}):(\d{2})/);
@@ -2003,14 +2044,14 @@
       card: m => {
         const ended = m.end && m.end < todayIso();
         const dueSoon = m.refillDue && !ended && m.refillDue <= new Date(Date.now() + 5 * 86400000).toISOString().slice(0, 10);
-        const url = gcalUrl(m);
+        const url = medCalLink(m);
         return {
           title: m.name, dim: ended, tag: ended ? 'Stopped' : '', flag: dueSoon ? 'Refill due ' + fmtDate(m.refillDue) : '',
           sub: [m.dose, m.frequency].filter(Boolean).join(', '),
           lines: [m.doctor ? 'Prescribed by ' + m.doctor : '', m.pharmacy ? 'Filled at ' + m.pharmacy + (m.rxNumber ? ', Rx ' + m.rxNumber : '') : '',
             (m.refillsRemaining ?? '') !== '' && m.refillsRemaining !== null ? m.refillsRemaining + ' refills left' + (m.refillDue && !dueSoon ? ', next due ' + fmtDate(m.refillDue) : '') : (m.refillDue && !dueSoon ? 'Next refill due ' + fmtDate(m.refillDue) : ''),
             m.start || m.end ? [m.start ? 'Started ' + fmtDate(m.start) : '', m.end ? 'Ends ' + fmtDate(m.end) : ''].filter(Boolean).join(', ') : '', m.notes],
-          links: url ? [{ href: url, text: '📅 Reminder' }] : [],
+          links: url ? [{ href: url, text: '📅 Set reminder in Calendar', self: IS_ANDROID }] : [],
         };
       },
     },
@@ -2070,7 +2111,7 @@
       sort: (a, b) => { const t = todayIso(); const pa = (a.date || '') < t, pb = (b.date || '') < t; return pa - pb || (pa ? byDateDesc(a, b) : -byDateDesc(a, b)); },
       card: a => ({ title: fmtDate(a.date) + (a.time ? ', ' + fmtTime(a.time) : ''), tag: (a.date || '') >= todayIso() ? 'Upcoming' : '', dim: (a.date || '') < todayIso(),
         sub: [a.provider, a.location].filter(Boolean).join(' · '), lines: [a.notes],
-        links: (a.date || '') >= todayIso() ? [{ href: apptCalUrl(a), text: '📅 Add to Google Calendar' }].concat(a.location ? [{ href: 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(a.location), text: '📍 Map' }] : []) : [] }),
+        links: (a.date || '') >= todayIso() ? [{ href: apptCalLink(a), text: '📅 Add to Calendar', self: IS_ANDROID }].concat(a.location ? [{ href: 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(a.location), text: '📍 Map' }] : []) : [] }),
     },
     insurance: {
       idKey: 'insurance', noun: 'insurance plan', empty: 'No insurance plans added yet.',
@@ -2145,7 +2186,7 @@
     const web = webHref(c.website);
     if (web) actions.push(`<a href="${escapeHtml(web)}" target="_blank" rel="noopener">🌐 Website</a>`);
     if (c.email) actions.push(`<a href="mailto:${escapeHtml(c.email)}">✉️ Email</a>`);
-    (c.links || []).forEach(l => actions.push(`<a href="${escapeHtml(l.href)}" target="_blank" rel="noopener">${escapeHtml(l.text)}</a>`));
+    (c.links || []).forEach(l => actions.push(`<a href="${escapeHtml(l.href)}"${l.self ? '' : ' target="_blank" rel="noopener"'}>${escapeHtml(l.text)}</a>`));
     const compact = !!(opts && opts.directory);
     let long = '';
     if (c.long && !compact) {
