@@ -256,7 +256,7 @@
   .modal-overlay { position: fixed; inset: 0; background: rgba(15, 23, 20, 0.45); z-index: 50; display: flex; align-items: flex-end; justify-content: center; padding: 12px; padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px)); }
   .modal-overlay[hidden] { display: none; }
   #edit-fields [hidden] { display: none !important; }
-  .modal { background: var(--panel); border-radius: 14px; width: 100%; max-width: 560px; max-height: 88vh; overflow-y: auto; padding: 20px 20px 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.25); }
+  .modal { background: var(--panel); border-radius: 14px; width: 100%; max-width: 560px; max-height: 88vh; max-height: 88dvh; overflow-y: auto; padding: 20px 20px 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.25); }
   @media (min-width: 640px) { .modal-overlay { align-items: center; } }
   .edit-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 14px; }
   .edit-grid .wide { grid-column: 1 / -1; }
@@ -709,6 +709,7 @@
 </div>
 <datalist id="doctor-names"></datalist>
 <datalist id="pharmacy-names"></datalist>
+<datalist id="known-apps"></datalist>
 <script>
 (function () {
   const RANGES = {
@@ -1154,30 +1155,53 @@
     if (!site) return null;
     return /^https?:\/\//.test(site) ? site : 'https://' + site;
   }
-  // Apps a Quick Link can open. IDs are the Play Store app IDs.
+  // Apps a Quick Link can open directly. IDs are Play Store app IDs; "also" = other names people type.
   const KNOWN_APPS = [
-    { id: 'com.CallTheCar.app', name: 'Call the Car (CTC-Go)' },
-    { id: 'com.cvs.launchers.cvs', name: 'CVS Pharmacy' },
-    { id: 'com.goodrx', name: 'GoodRx' },
-    { id: 'org.kp.m', name: 'Kaiser Permanente' },
-    { id: 'com.labcorp.patientportal', name: 'Labcorp Patient' },
-    { id: 'me.lyft.android', name: 'Lyft' },
-    { id: 'epic.mychart.android', name: 'MyChart' },
-    { id: 'com.ubercab', name: 'Uber' },
-    { id: 'com.usablenet.mobile.walgreen', name: 'Walgreens' },
+    { id: 'com.CallTheCar.app', name: 'Call the Car', also: ['ctc go', 'ctcgo', 'callthecar'] },
+    { id: 'epic.mychart.android', name: 'MyChart', also: ['my chart'] },
+    { id: 'com.labcorp.patientportal', name: 'Labcorp Patient', also: ['labcorp', 'lab corp'] },
+    { id: 'org.kp.m', name: 'Kaiser Permanente', also: ['kaiser', 'kp'] },
+    { id: 'com.cvs.launchers.cvs', name: 'CVS Pharmacy', also: ['cvs'] },
+    { id: 'com.usablenet.mobile.walgreen', name: 'Walgreens', also: [] },
+    { id: 'com.goodrx', name: 'GoodRx', also: ['good rx'] },
+    { id: 'com.cigna.mycigna', name: 'myCigna', also: ['cigna'] },
+    { id: 'com.ecw.healow', name: 'healow', also: [] },
+    { id: 'com.jardogs.fmhmobile', name: 'FollowMyHealth', also: ['follow my health'] },
+    { id: 'us.zoom.videomeetings', name: 'Zoom', also: [] },
+    { id: 'me.lyft.android', name: 'Lyft', also: [] },
+    { id: 'com.ubercab', name: 'Uber', also: [] },
+    { id: 'com.google.android.apps.maps', name: 'Google Maps', also: ['maps'] },
+    { id: 'com.google.android.calendar', name: 'Google Calendar', also: ['calendar'] },
+    { id: 'com.google.android.gm', name: 'Gmail', also: [] },
   ];
   const APP_ID_RE = /^[A-Za-z][\w]*(\.[A-Za-z_][\w]*)+$/;
-  function appIdFrom(text) {
+  const squash = t => String(t || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+  // Turns whatever was typed (an app name, a Play Store link, or an app ID) into { id, name }.
+  function resolveApp(text) {
     const t = String(text || '').trim();
+    if (!t) return null;
     const m = t.match(/[?&]id=([A-Za-z][\w.]*)/);
-    if (m && APP_ID_RE.test(m[1])) return m[1];
-    return APP_ID_RE.test(t) ? t : null;
+    if (m && APP_ID_RE.test(m[1])) return { id: m[1], name: (KNOWN_APPS.find(a => a.id === m[1]) || {}).name || '' };
+    if (APP_ID_RE.test(t) && !/\s/.test(t) && /[a-z]\.[a-z]/i.test(t) && !/\.(com|org|net|gov)$/i.test(t)) return { id: t, name: '' };
+    const q = squash(t);
+    if (q.length < 2) return { id: '', name: t };
+    const hit = KNOWN_APPS.find(a => [a.name, ...a.also].some(n => squash(n) === q))
+      || (q.length >= 4 ? KNOWN_APPS.find(a => [a.name, ...a.also].some(n => { const k = squash(n); return k.length >= 4 && (q.includes(k) || k.includes(q)); })) : null);
+    return hit ? { id: hit.id, name: hit.name } : { id: '', name: t };
   }
-  function appHref(pkg) {
-    if (!pkg || !APP_ID_RE.test(pkg)) return null;
-    const store = 'https://play.google.com/store/apps/details?id=' + pkg;
+  // Known app: open it (Play Store page if it isn't installed). Unknown app: jump to it in the Play Store, which has an Open button.
+  function appHref(appId, appName) {
     if (!IS_ANDROID) return null;
-    return `intent://#Intent;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;package=${pkg};S.browser_fallback_url=${encodeURIComponent(store)};end`;
+    const e = encodeURIComponent;
+    if (appId && APP_ID_RE.test(appId)) {
+      const store = 'https://play.google.com/store/apps/details?id=' + appId;
+      return `intent://#Intent;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;package=${appId};S.browser_fallback_url=${e(store)};end`;
+    }
+    if (appName) {
+      const web = 'https://play.google.com/store/search?c=apps&q=' + e(appName);
+      return `intent://search?c=apps&q=${e(appName)}#Intent;scheme=market;package=com.android.vending;S.browser_fallback_url=${e(web)};end`;
+    }
+    return null;
   }
   function dirItem(name, sub, phone, website, email) {
     const actions = [];
@@ -2184,28 +2208,21 @@
     },
     quickLinks: {
       idKey: 'link', noun: 'link', empty: '',
-      fields: [F('name', 'Name', 'text', { required: true, placeholder: 'e.g. MyChart, Labcorp, Medicare' }), F('url', 'Website', 'text', { wide: true, inputmode: 'url', placeholder: 'optional' }),
+      fields: [F('name', 'Name', 'text', { placeholder: 'e.g. MyChart, Labcorp, Medicare' }), F('url', 'Website', 'text', { wide: true, inputmode: 'url', placeholder: 'optional' }),
         F('phone', 'Phone', 'tel', { placeholder: 'optional' }),
-        F('app', 'Open an app on your phone', 'select', { wide: true, options: [['', 'No app'], ...KNOWN_APPS.map(a => [a.id, a.name]), ['other', 'Another app (paste its Play Store link)']] }),
-        F('playLink', 'Play Store link', 'text', { wide: true, inputmode: 'url', showIf: ['app', 'other'], placeholder: 'In the Play Store, open the app, tap ⋮ then Share, then Copy' })],
+        F('appName', 'App on your phone', 'text', { wide: true, list: 'known-apps', placeholder: 'optional, e.g. Call the Car' })],
       sort: (a, b) => String(a.name || '').localeCompare(String(b.name || '')),
-      onChange: (key, wrap) => {
-        if (key !== 'app') return;
-        const sel = wrap.querySelector('[name=app]'), nameEl = wrap.querySelector('[name=name]');
-        const known = KNOWN_APPS.find(a => a.id === sel.value);
-        if (known && nameEl && !nameEl.value.trim()) nameEl.value = known.name.replace(/\s*\(.*\)$/, '');
-      },
       beforeSave: v => {
         if (v.url && !v.phone && /^[\d\s().+-]{7,}$/.test(v.url) && v.url.replace(/\D/g, '').length >= 7) { v.phone = v.url; v.url = ''; }
-        if (v.app === 'other') {
-          const id = appIdFrom(v.playLink);
-          if (!id) return "That doesn't look like a Play Store link. In the Play Store, open the app's page, tap ⋮, then Share, then Copy, and paste it here.";
-          v.appId = id;
-        } else { v.appId = v.app || ''; v.playLink = ''; }
-        if (!v.url && !v.phone && !v.appId) return 'Add a website, a phone number, or an app to open.';
+        const app = resolveApp(v.appName);
+        v.appId = app ? app.id : '';
+        if (app && (/^https?:/i.test(v.appName) || app.id === v.appName)) v.appName = app.name || app.id;
+        if (!v.name) v.name = app ? (app.name || v.appName) : '';
+        if (!v.name) return 'Add a name for this link.';
+        if (!v.url && !v.phone && !v.appName) return 'Add a website, a phone number, or an app.';
         return null;
       },
-      card: l => { const h = appHref(l.appId); return { title: l.name, phone: l.phone, website: l.url, links: h ? [{ href: h, text: '📱 Open app', self: true }] : [] }; },
+      card: l => { const h = appHref(l.appId, l.appName); return { title: l.name, phone: l.phone, website: l.url, links: h ? [{ href: h, text: '📱 Open app', self: true }] : [] }; },
     },
     places: {
       idKey: 'place', noun: 'place', empty: '',
@@ -2344,6 +2361,9 @@
       store.linksSeeded = true; saveStore();
     }
     store.quickLinks.forEach(l => { if (l.url && !l.phone && /^[\d\s().+-]{7,}$/.test(l.url) && l.url.replace(/\D/g, '').length >= 7) { l.phone = l.url; l.url = ''; } });
+    store.quickLinks.forEach(l => { if (l.appId && !l.appName) l.appName = (KNOWN_APPS.find(a => a.id === l.appId) || {}).name || l.appId; });
+    const appList = document.getElementById('known-apps');
+    if (appList && !appList.children.length) appList.innerHTML = KNOWN_APPS.map(a => `<option value="${escapeHtml(a.name)}">`).join('');
     add('Websites & quick links', 'quickLinks', [...store.quickLinks].sort(SCHEMAS.quickLinks.sort));
     KIND_ORDER.forEach(kind => add(KIND_LABEL[kind], 'places', (store.places || []).filter(pl => (KIND_ORDER.includes(pl.kind) ? pl.kind : 'Other') === kind)));
     add('Pharmacies', 'pharmacies', store.pharmacies);
