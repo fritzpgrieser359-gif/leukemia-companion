@@ -82,6 +82,8 @@
   }
   .tab-btn:hover { background: var(--accent-soft); color: var(--text); }
   .tab-btn.active { background: var(--accent); color: #fff; }
+  .tab-btn .ti { margin-right: 5px; }
+  @media (max-width: 600px) { .tab-btn .ti { margin-right: 0; } }
 
   .container { max-width: 760px; margin: 0 auto; padding: 32px 24px 80px; }
   .view { display: none; }
@@ -111,12 +113,13 @@
   textarea { resize: vertical; min-height: 70px; }
   .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 
-  button.primary {
+  button.primary, label.primary {
     background: var(--accent); color: #fff; border: none; border-radius: 8px;
     padding: 10px 18px; font-family: inherit; font-weight: 600; font-size: 0.95rem;
     cursor: pointer; margin-top: 16px;
   }
-  button.primary:hover { background: var(--accent-dark); }
+  button.primary:hover, label.primary:hover { background: var(--accent-dark); }
+  label.primary { display: inline-block; text-align: center; }
   button.ghost {
     background: none; border: 1px solid var(--border); color: var(--text);
     border-radius: 8px; padding: 9px 16px; font-family: inherit; cursor: pointer; font-size: 0.9rem;
@@ -146,12 +149,13 @@
   [id$="-list-wrap"], #log-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
   @media (max-width: 600px) {
     .topbar { flex-wrap: wrap; gap: 8px; padding: 12px 16px; }
-    .tabs { overflow-x: auto; max-width: 100%; }
-    .tab-btn { white-space: nowrap; }
+    .tabs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; width: 100%; }
+    .tab-btn { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 6px 2px; font-size: 0.78rem; line-height: 1.15; text-align: center; }
+    .tab-btn .ti { font-size: 1.25rem; line-height: 1; }
   }
   .dir-actions a {
     display: inline-flex; align-items: center; gap: 5px; background: var(--accent-soft); color: var(--accent-dark);
-    border-radius: 8px; padding: 7px 12px; font-size: 0.83rem; font-weight: 600; text-decoration: none; white-space: nowrap;
+    border-radius: 10px; padding: 10px 14px; min-height: 44px; font-size: 0.98rem; font-weight: 600; text-decoration: none; white-space: nowrap;
   }
   .dir-actions a:hover { background: var(--accent); color: #fff; }
   .post-item .meta { color: var(--muted); font-size: 0.85rem; }
@@ -198,6 +202,27 @@
   .rec-lines div { overflow-wrap: anywhere; }
   .rec-pre { white-space: pre-line; }
   .lab-wrap { overflow-x: auto; margin-top: 8px; }
+  details.fold > summary { cursor: pointer; font-family: 'Newsreader', Georgia, serif; font-weight: 600; font-size: 1.08rem; list-style: none; display: flex; justify-content: space-between; align-items: center; }
+  details.fold > summary::-webkit-details-marker { display: none; }
+  details.fold > summary::after { content: '▾'; color: var(--accent); font-size: 1rem; }
+  details.fold[open] > summary::after { content: '▴'; }
+  details.fold[open] > summary { margin-bottom: 12px; }
+  .cal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+  .cal-nav { font-size: 1.3rem; line-height: 1; padding: 4px 14px; }
+  .cal-legend { display: flex; flex-wrap: wrap; gap: 12px; font-size: 0.78rem; color: var(--muted); margin-bottom: 8px; }
+  .cal-legend i { display: inline-block; margin-right: 5px; vertical-align: 1px; }
+  .dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; }
+  .dot.appt { background: var(--accent); } .dot.lab { background: #7a6bb0; } .dot.refill { background: var(--warn); }
+  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
+  .cal-grid .dow { text-align: center; font-size: 0.72rem; color: var(--muted); padding: 2px 0; }
+  .cal-cell { min-height: 44px; border: 1px solid var(--border); border-radius: 8px; background: var(--panel); padding: 3px; display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer; font: inherit; color: inherit; }
+  .cal-cell.blank { border: 0; background: none; cursor: default; }
+  .cal-cell .n { font-size: 0.82rem; }
+  .cal-cell .dots { display: flex; gap: 2px; flex-wrap: wrap; justify-content: center; }
+  .cal-cell.today { border-color: var(--accent); border-width: 2px; }
+  .cal-cell.sel { background: var(--accent-soft); }
+  .cal-day { margin-top: 10px; font-size: 0.9rem; }
+  .cal-day .item { padding: 8px 0; border-bottom: 1px solid var(--border); }
   .lab-table { width: 100%; border-collapse: collapse; font-size: 0.86rem; }
   .lab-table th { text-align: left; font-weight: 600; color: var(--muted); font-size: 0.76rem; padding: 4px 8px 4px 0; border-bottom: 1px solid var(--border, rgba(0,0,0,.12)); }
   .lab-table td { padding: 5px 8px 5px 0; border-bottom: 1px solid var(--border, rgba(0,0,0,.08)); vertical-align: top; }
@@ -216,8 +241,11 @@
   .rec-vals .out-of-range { color: var(--warn); font-weight: 600; }
   .rec-side { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; flex-shrink: 0; }
   .rec-side .dir-actions { justify-content: flex-end; }
-  .rec-edit { background: none; border: 1px solid var(--border); color: var(--text); border-radius: 8px; padding: 5px 12px; font: inherit; font-size: 0.82rem; cursor: pointer; }
+  .rec-edit { background: none; border: 1px solid var(--border); color: var(--text); border-radius: 10px; padding: 8px 14px; min-height: 40px; font: inherit; font-size: 0.92rem; cursor: pointer; }
   .rec-edit:hover { border-color: var(--accent); }
+  .rec-btns { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+  .rec-del { background: none; border: 1px solid var(--border); color: var(--warn); border-radius: 10px; padding: 8px 14px; min-height: 40px; font: inherit; font-size: 0.92rem; cursor: pointer; }
+  .rec-del:hover { border-color: var(--warn); background: var(--warn-soft); }
   .rec-more { font-size: 0.82rem; color: var(--accent); background: none; border: none; padding: 4px 0 0; cursor: pointer; font: inherit; font-size: 0.82rem; text-decoration: underline; }
   @media (max-width: 520px) {
     .rec-card.has-actions { flex-wrap: wrap; }
@@ -227,6 +255,7 @@
   }
   .modal-overlay { position: fixed; inset: 0; background: rgba(15, 23, 20, 0.45); z-index: 50; display: flex; align-items: flex-end; justify-content: center; padding: 12px; padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px)); }
   .modal-overlay[hidden] { display: none; }
+  #edit-fields [hidden] { display: none !important; }
   .modal { background: var(--panel); border-radius: 14px; width: 100%; max-width: 560px; max-height: 88vh; overflow-y: auto; padding: 20px 20px 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.25); }
   @media (min-width: 640px) { .modal-overlay { align-items: center; } }
   .edit-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 14px; }
@@ -266,13 +295,13 @@
 <div class="topbar">
   <div class="brand">Leukemia Companion</div>
   <div class="tabs">
-    <button class="tab-btn active" data-view="home">🏠 Home</button>
-    <button class="tab-btn" data-view="tracker">📋 My Health</button>
-    <button class="tab-btn" data-view="careteam">👩‍⚕️ Care Team</button>
-    <button class="tab-btn" data-view="support">🤝 Support</button>
-    <button class="tab-btn" data-view="directory">📇 Directory</button>
-    <button class="tab-btn" data-view="education">📚 Helpful Info</button>
-    <button class="tab-btn" data-view="community">📝 My Notes</button>
+    <button class="tab-btn active" data-view="home"><span class="ti">🏠</span><span class="tl">Home</span></button>
+    <button class="tab-btn" data-view="tracker"><span class="ti">📋</span><span class="tl">My Health</span></button>
+    <button class="tab-btn" data-view="careteam"><span class="ti">👩‍⚕️</span><span class="tl">Care Team</span></button>
+    <button class="tab-btn" data-view="support"><span class="ti">🤝</span><span class="tl">Support</span></button>
+    <button class="tab-btn" data-view="directory"><span class="ti">📇</span><span class="tl">Directory</span></button>
+    <button class="tab-btn" data-view="education"><span class="ti">📚</span><span class="tl">Helpful Info</span></button>
+    <button class="tab-btn" data-view="community"><span class="ti">📝</span><span class="tl">My Notes</span></button>
   </div>
 </div>
 
@@ -281,26 +310,30 @@
   <!-- HOME -->
   <div class="view active" id="view-home">
     <div class="hero">
-      <h1>Track labs. Learn the basics. Talk to people who get it.</h1>
-      <p>A small companion tool for logging bloodwork and symptoms, reading plain-language explanations of leukemia types, and swapping notes with others.</p>
-    </div>
-    <div class="card-grid">
-      <div class="card" data-goto="tracker"><div class="kicker">Log &amp; chart</div><h3>My Health</h3><p style="margin:0">Allergies, conditions, medications, blood counts, symptoms, appointments, and insurance.</p></div>
-      <div class="card" data-goto="careteam"><div class="kicker">Contacts &amp; history</div><h3>Care Team</h3><p style="margin:0">Keep every doctor's info and a running log of what happened at each visit.</p></div>
-      <div class="card" data-goto="support"><div class="kicker">Personal network</div><h3>Support</h3><p style="margin:0">Friends and family who help out — who to call, who drives you places, who's your emergency contact.</p></div>
-      <div class="card" data-goto="directory"><div class="kicker">One-tap contacts</div><h3>Directory</h3><p style="margin:0">Every doctor, pharmacy, case manager, and support contact in one list — tap to call or open their website.</p></div>
-      <div class="card" data-goto="education"><div class="kicker">Reference</div><h3>Helpful Info</h3><p style="margin:0">Plain-language pages on ALL, AML, CLL, CML, and a glossary of terms.</p></div>
-      <div class="card" data-goto="community"><div class="kicker">Journal</div><h3>My Notes</h3><p style="margin:0">A private space for freeform notes — visible only in this browser.</p></div>
+      <h1>Your labs, meds, and care team in one place.</h1>
+      <p>Share a lab report from Labcorp and it's saved here with the original. Keep track of medications, appointments, doctors, and questions for your next visit. Everything stays on this phone.</p>
     </div>
     <div class="panel">
-      <h3 style="margin-bottom:6px">Recent results</h3>
-      <p style="color:var(--muted);margin-bottom:14px;font-size:0.88rem">Your latest bloodwork and latest imaging/other test result, at a glance.</p>
-      <div id="recent-results-wrap"><div class="empty-state">Nothing yet. Share a lab report from Labcorp to this app, or pick the PDF below.</div></div>
-      <button type="button" class="ghost" data-goto="tracker" style="margin-top:14px">View full history</button>
+      <h3 style="margin-bottom:6px">Today</h3>
+      <div id="due-today-wrap"><div class="empty-state">No medications tracked yet.</div></div>
+    </div>
+    <div class="panel" id="cal-panel">
+      <div class="cal-head">
+        <button type="button" class="ghost cal-nav" data-cal="-1" aria-label="Previous month">‹</button>
+        <h3 id="cal-title" style="margin:0"></h3>
+        <button type="button" class="ghost cal-nav" data-cal="1" aria-label="Next month">›</button>
+      </div>
+      <div class="cal-legend"><span><i class="dot appt"></i>Appointment</span><span><i class="dot lab"></i>Lab / test</span><span><i class="dot refill"></i>Refill due</span></div>
+      <div class="cal-grid" id="cal-grid"></div>
+      <div id="cal-day" class="cal-day"></div>
+      <button type="button" class="ghost" id="cal-add-appt" style="margin-top:10px">+ Add appointment</button>
+    </div>
+    <div class="panel" style="padding-top:14px;padding-bottom:14px">
+      <div id="recent-results-wrap"></div>
     </div>
     <div class="panel" id="labpdf-panel">
       <h3 style="margin-bottom:6px">Add a lab report</h3>
-      <p style="color:var(--muted);margin-bottom:14px;font-size:0.88rem">Got results from Labcorp, Quest, or your doctor as a PDF? Save it to your phone, then pick it here. The app reads your blood counts (WBC, ANC, platelets, hemoglobin) and fills them in for you to check before saving.</p>
+      <p style="color:var(--muted);margin-bottom:14px;font-size:0.88rem">Got results from Labcorp, Quest, or your doctor as a PDF? In the Labcorp app, tap Share and pick Leukemia Companion, or save the PDF and pick it here. The whole report and the original are saved, and your blood counts go on your chart automatically.</p>
       <label for="labpdf-input" class="primary" role="button" tabindex="0" style="display:inline-block;cursor:pointer;margin:0">Choose lab report PDF</label>
       <input type="file" id="labpdf-input" accept="application/pdf,.pdf" style="position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;pointer-events:none">
       <div id="labpdf-status" style="margin-top:10px;font-size:0.88rem;color:var(--muted)"></div>
@@ -323,8 +356,8 @@
         </div>
       </details>
     </div>
-    <div class="panel">
-      <h3 style="margin-bottom:6px">Add from email</h3>
+    <details class="panel fold">
+      <summary>Add from email (paste the text)</summary>
       <p style="color:var(--muted);margin-bottom:14px;font-size:0.88rem">If something only ever reaches you by email — a result, a doctor's after-visit note, a report — paste the text here instead of retyping it. It's filed with today's date into the right place automatically.</p>
       <form id="email-result-form">
         <label>What kind of entry is this</label>
@@ -357,13 +390,12 @@
         <textarea id="er-content" placeholder="Paste the result text from the email" style="min-height:110px" required></textarea>
         <button type="submit" class="primary">Save</button>
       </form>
-    </div>
+    </details>
     <div class="panel" id="mychart-import-panel">
       <h3 style="margin-bottom:6px">Import from MyChart</h3>
       <p style="color:var(--muted);margin-bottom:14px;font-size:0.88rem">In MyChart, download your health summary (it saves as a .zip file), then pick that file here. Your allergies, conditions, medications, lab results, doctors, visits and insurance are read on this phone and added to the app. Your records stay on this device.</p>
       <label for="mychart-file-input" class="primary" id="mychart-pick-btn" role="button" tabindex="0" style="display:inline-block;cursor:pointer;margin:0">Choose MyChart file</label>
       <input type="file" id="mychart-file-input" accept=".zip,.xml,application/zip,application/x-zip-compressed,text/xml,application/xml,*/*" style="position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;pointer-events:none">
-      <p style="margin-top:10px;font-size:0.8rem;color:var(--muted)">If tapping the button does nothing, open this app in Chrome instead of inside the Claude app.</p>
       <div id="mychart-status" style="margin-top:10px;font-size:0.88rem;color:var(--muted)"></div>
       <div id="mychart-preview" style="display:none;margin-top:12px">
         <p style="margin-bottom:8px;font-size:0.9rem">Here's what was found. Uncheck anything you don't want, then add it.</p>
@@ -374,21 +406,9 @@
         </div>
       </div>
     </div>
-    <div class="panel">
-      <h3 style="margin-bottom:6px">Today</h3>
-      <div id="due-today-wrap"><div class="empty-state">No medications tracked yet.</div></div>
-    </div>
-    <div class="panel">
-      <h3 style="margin-bottom:6px">Quick Links</h3>
-      <p style="color:var(--muted);margin-bottom:14px">One place for every website you need — doctor portals, lab result sites (like MyChart, Quest, or LabCorp), pharmacy sites, insurance sites, anything. Tap to open in a new tab.</p>
-      <form id="link-form" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px">
-        <input type="text" id="link-name" placeholder="Name (e.g. MyChart, Quest Labs)" style="flex:1;min-width:160px;margin:0">
-        <input type="text" id="link-url" placeholder="Website address" style="flex:1;min-width:160px;margin:0">
-        <button type="submit" class="primary" style="white-space:nowrap">Add link</button>
-      </form>
-      <div id="link-list-wrap"><div class="empty-state">No links added yet.</div></div>
-    </div>
-    <div class="panel">
+    <details class="panel fold settings-fold">
+      <summary>⚙️ Settings: backup &amp; PIN lock</summary>
+    <div class="panel" style="margin-top:12px">
       <h3 style="margin-bottom:6px">Data &amp; backup</h3>
       <p style="color:var(--muted);margin-bottom:14px">Everything you enter is stored only in this browser. Download a backup periodically, or if you're moving to a new device — you can restore it here or in a fresh copy of this app.</p>
       <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
@@ -398,7 +418,7 @@
       </div>
       <div id="backup-status" style="margin-top:10px;font-size:0.85rem;color:var(--muted)"></div>
     </div>
-    <div class="panel">
+    <div class="panel" style="margin-top:12px">
       <h3 style="margin-bottom:6px">PIN lock</h3>
       <p style="color:var(--muted);margin-bottom:14px">Adds a PIN screen before this app opens on this device. This is a privacy screen, not encryption — the underlying data in this browser isn't scrambled, so it mainly stops casual glances, not someone with real access to the device.</p>
       <div id="pin-status-line" style="font-size:0.88rem;margin-bottom:12px;color:var(--muted)">No PIN set.</div>
@@ -408,6 +428,7 @@
         <button type="button" class="ghost" id="pin-lock-now-btn" style="display:none">Lock now</button>
       </div>
     </div>
+    </details>
   </div>
 
   <!-- TRACKER -->
@@ -431,16 +452,12 @@
     </div>
     <div class="panel">
       <div class="sec-head"><h3>Log history / Lab work</h3><label for="labpdf-input" class="add-btn" role="button" tabindex="0" style="cursor:pointer">+ Add lab report (PDF)</label></div>
-      <p class="sec-desc">Your blood counts over time: WBC, ANC, platelets and hemoglobin. Values outside the usual adult range are highlighted.</p>
-      <div style="margin-bottom:12px;display:flex;gap:10px;flex-wrap:wrap">
-        <button type="button" class="ghost" id="export-csv-btn">Export CSV</button>
-        <button type="button" class="ghost" id="export-pdf-btn">Export PDF for doctor</button>
-      </div>
+      <p class="sec-desc">Your latest lab report. Tap Look up past results to see older ones.</p>
       <div class="rec-list" id="list-logs"></div>
     </div>
     <div class="panel">
       <div class="sec-head"><h3>Test results</h3><button type="button" class="add-btn" data-add="testResults">+ Add</button></div>
-      <p class="sec-desc">Imaging, biopsies, pathology, BCR-ABL and other reports, newest first.</p>
+      <p class="sec-desc">Imaging, biopsies, pathology, BCR-ABL and other reports. Your latest is shown; older ones are under Look up past results.</p>
       <div class="rec-list" id="list-testResults"></div>
     </div>
     <div class="panel">
@@ -456,7 +473,7 @@
     <div class="panel">
       <div class="sec-head"><h3>Insurance</h3><button type="button" class="add-btn" data-add="insurance">+ Add</button></div>
       <p class="sec-desc">Your plans, member IDs, and phone numbers.</p>
-      <p style="font-size:0.88rem;margin-bottom:12px">Quick links: <a href="https://www.medicare.gov" target="_blank" rel="noopener">Medicare</a> (800-633-4227) &nbsp;·&nbsp; <a href="https://www.dhcs.ca.gov/services/medi-cal" target="_blank" rel="noopener">Medi-Cal</a> (800-541-5555)</p>
+      <p style="font-size:0.88rem;margin-bottom:12px">Quick links: <a href="https://www.medicare.gov" target="_blank" rel="noopener">Medicare</a> (<a href="tel:8006334227">800-633-4227</a>) &nbsp;·&nbsp; <a href="https://www.dhcs.ca.gov/services/medi-cal" target="_blank" rel="noopener">Medi-Cal</a> (<a href="tel:8005415555">800-541-5555</a>)</p>
       <div class="rec-list" id="list-insurance"></div>
     </div>
     <div class="panel">
@@ -537,8 +554,8 @@
   <div class="view" id="view-directory">
     <h2>Directory</h2>
     <div class="panel">
-      <div class="sec-head"><h3>Every number in one place</h3><button type="button" class="add-btn" data-add="places">+ Add a place</button></div>
-      <p class="sec-desc" style="margin-bottom:0">Doctors, labs, hospitals, clinics, pharmacies, insurance, case managers, organizations, and support contacts. Tap a number to call it or a website to open it. Use Add a place for labs, hospitals, urgent care, and anywhere else.</p>
+      <div class="sec-head"><h3>Every number in one place</h3><div style="display:flex;gap:8px;flex-wrap:wrap"><button type="button" class="add-btn" data-add="quickLinks">+ Add a link</button><button type="button" class="add-btn" data-add="places">+ Add a place</button></div></div>
+      <p class="sec-desc" style="margin-bottom:0">Doctors, labs, hospitals, clinics, pharmacies, insurance, case managers, organizations, and support contacts. Tap a number to call it or a website to open it. Use Add a link for websites and phone numbers like patient portals, MyChart, or Labcorp. Use Add a place for labs, hospitals, urgent care, and anywhere else.</p>
     </div>
     <div class="panel" id="directory-wrap"></div>
   </div>
@@ -1035,25 +1052,18 @@
 
   const FEVER_THRESHOLD_F = 100.4;
   function renderRecentResults() {
+    // One slim line: the latest lab report and a button to open the original.
     const wrap = document.getElementById('recent-results-wrap');
     if (!wrap) return;
-    const lastLog = [...store.logs].sort((a, b) => (a.date > b.date ? -1 : 1))[0];
-    const lastTest = [...store.testResults].sort((a, b) => (a.date > b.date ? -1 : 1))[0];
-    if (!lastLog && !lastTest) { wrap.innerHTML = '<div class="empty-state">Nothing yet. Share a lab report from Labcorp to this app, or pick the PDF below.</div>'; return; }
-    let html = '';
-    if (lastLog) {
-      const cell = (field, label, unit) => {
-        const v = lastLog[field];
-        if (v === null || v === undefined || v === '') return '';
-        const cls = inRange(field, v) ? '' : ' class="out-of-range"';
-        return `<span${cls} style="margin-right:14px">${label} ${v}${unit}</span>`;
-      };
-      html += `<div class="dir-item"><div class="dir-info"><div class="dir-name">Latest bloodwork — ${lastLog.date}</div><div class="dir-sub" style="margin-top:6px">${cell('wbc', 'WBC', '')}${cell('anc', 'ANC', '')}${cell('platelets', 'Plt', '')}${cell('hemoglobin', 'Hgb', '')}${!lastLog.wbc && !lastLog.anc && !lastLog.platelets && !lastLog.hemoglobin ? 'No values recorded' : ''}</div></div></div>`;
-    }
-    if (lastTest) {
-      html += `<div class="dir-item"><div class="dir-info"><div class="dir-name">Latest other result — ${lastTest.date}${lastTest.type ? ' · ' + escapeHtml(lastTest.type) : ''}</div><div class="dir-sub" style="margin-top:6px">${escapeHtml(lastTest.result || lastTest.description || 'No summary recorded')}${lastTest.followup ? ' · ⚠️ Follow-up needed' : ''}</div></div></div>`;
-    }
-    wrap.innerHTML = html;
+    const last = [...(store.testResults || [])].sort((a, b) => (a.date > b.date ? -1 : 1))[0];
+    if (!last) { wrap.innerHTML = '<div style="color:var(--muted);font-size:0.9rem">No lab reports yet. Share one from Labcorp to this app, or pick the PDF below.</div>'; return; }
+    const rows = Array.isArray(last.rows) ? last.rows : [];
+    const flagged = rows.filter(r => r.flag).length;
+    wrap.innerHTML = `<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
+      <div><div style="font-weight:600">Latest: ${escapeHtml((last.description || last.type || 'Test result').replace(/ – .*$/, ''))}</div>
+      <div style="color:var(--muted);font-size:0.88rem">${escapeHtml(fmtDate(last.date))}${flagged ? ` · <span class="out-of-range">${flagged} out of range</span>` : ''}</div></div>
+      ${last.pdfId ? `<button type="button" class="ghost view-pdf" data-pdf="${escapeHtml(last.pdfId)}" style="margin:0">📄 View original</button>` : `<button type="button" class="ghost" data-goto="tracker" style="margin:0">View</button>`}
+    </div>`;
   }
   function gcalUrl(med) {
     if (!med.reminderTime) return null;
@@ -1071,6 +1081,71 @@
     const details = encodeURIComponent([med.frequency, med.notes].filter(Boolean).join(' — ') || 'Medication reminder from Leukemia Companion');
     return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${text}&dates=${fmt(dt)}/${fmt(endDt)}&details=${details}${recur}`;
   }
+  const IS_ANDROID = /Android/i.test(navigator.userAgent);
+  // Android: open the phone's Calendar app on a full-size "new event" screen (falls back to the Google Calendar web page).
+  function calIntent({ title, begin, end, allDay, rrule, location, description, fallback }) {
+    const e = encodeURIComponent;
+    let u = 'intent:#Intent;action=android.intent.action.INSERT;type=vnd.android.cursor.item/event;';
+    u += 'S.title=' + e(title) + ';l.beginTime=' + begin + ';l.endTime=' + end + ';';
+    if (allDay) u += 'B.allDay=true;';
+    if (rrule) u += 'S.rrule=' + e(rrule) + ';';
+    if (location) u += 'S.eventLocation=' + e(location) + ';';
+    if (description) u += 'S.description=' + e(description) + ';';
+    if (fallback && fallback !== '#') u += 'S.browser_fallback_url=' + e(fallback) + ';';
+    return u + 'end';
+  }
+  function medCalLink(med) {
+    const web = gcalUrl(med);
+    if (!web) return null;
+    if (!IS_ANDROID) return web;
+    const st = new Date(`${med.start || todayIso()}T${med.reminderTime}:00`);
+    if (isNaN(st.getTime())) return web;
+    let rrule = '';
+    if (med.repeat === 'DAILY' || med.repeat === 'WEEKLY') {
+      rrule = 'FREQ=' + med.repeat;
+      if (med.end) rrule += ';UNTIL=' + med.end.replace(/-/g, '') + 'T235959Z';
+    }
+    return calIntent({ title: `Take ${med.name}${med.dose ? ' (' + med.dose + ')' : ''}`, begin: st.getTime(), end: st.getTime() + 15 * 60000,
+      rrule, description: [med.frequency, med.notes].filter(Boolean).join(' — ') || 'Medication reminder from Leukemia Companion', fallback: web });
+  }
+  function apptCalLink(a) {
+    const web = apptCalUrl(a);
+    if (!IS_ANDROID) return web;
+    const title = 'Appointment' + (a.provider ? ' – ' + a.provider : '');
+    const description = [a.notes, 'From Leukemia Companion'].filter(Boolean).join('\n');
+    if (a.time) {
+      const st = new Date(`${a.date}T${a.time}:00`);
+      if (isNaN(st.getTime())) return web;
+      return calIntent({ title, begin: st.getTime(), end: st.getTime() + 3600000, location: a.location, description, fallback: web });
+    }
+    const d0 = Date.parse(a.date + 'T00:00:00Z');
+    if (isNaN(d0)) return web;
+    return calIntent({ title, begin: d0, end: d0 + 86400000, allDay: true, location: a.location, description, fallback: web });
+  }
+  function fmtTime(t) {
+    const m = String(t || '').match(/^(\d{1,2}):(\d{2})/);
+    if (!m) return t || '';
+    let h = +m[1]; const ap = h >= 12 ? 'PM' : 'AM'; h = h % 12 || 12;
+    return `${h}:${m[2]} ${ap}`;
+  }
+  function apptCalUrl(a) {
+    const text = encodeURIComponent('Appointment' + (a.provider ? ' – ' + a.provider : ''));
+    const details = encodeURIComponent([a.notes, 'From Leukemia Companion'].filter(Boolean).join('\n'));
+    const loc = a.location ? '&location=' + encodeURIComponent(a.location) : '';
+    let dates;
+    if (a.time) {
+      const st = new Date(`${a.date}T${a.time}:00`);
+      if (isNaN(st.getTime())) return '#';
+      const en = new Date(st.getTime() + 60 * 60000);
+      const f = d => d.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+      dates = `${f(st)}/${f(en)}`;
+    } else {
+      const d0 = new Date(a.date + 'T12:00:00'); const d1 = new Date(d0.getTime() + 86400000);
+      const f = d => d.getFullYear() + String(d.getMonth() + 1).padStart(2, '0') + String(d.getDate()).padStart(2, '0');
+      dates = `${f(d0)}/${f(d1)}`;
+    }
+    return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${text}&dates=${dates}&details=${details}${loc}`;
+  }
   function telHref(phone) {
     const digits = String(phone).replace(/[^\d+]/g, '');
     return digits ? `tel:${digits}` : null;
@@ -1078,6 +1153,31 @@
   function webHref(site) {
     if (!site) return null;
     return /^https?:\/\//.test(site) ? site : 'https://' + site;
+  }
+  // Apps a Quick Link can open. IDs are the Play Store app IDs.
+  const KNOWN_APPS = [
+    { id: 'com.CallTheCar.app', name: 'Call the Car (CTC-Go)' },
+    { id: 'com.cvs.launchers.cvs', name: 'CVS Pharmacy' },
+    { id: 'com.goodrx', name: 'GoodRx' },
+    { id: 'org.kp.m', name: 'Kaiser Permanente' },
+    { id: 'com.labcorp.patientportal', name: 'Labcorp Patient' },
+    { id: 'me.lyft.android', name: 'Lyft' },
+    { id: 'epic.mychart.android', name: 'MyChart' },
+    { id: 'com.ubercab', name: 'Uber' },
+    { id: 'com.usablenet.mobile.walgreen', name: 'Walgreens' },
+  ];
+  const APP_ID_RE = /^[A-Za-z][\w]*(\.[A-Za-z_][\w]*)+$/;
+  function appIdFrom(text) {
+    const t = String(text || '').trim();
+    const m = t.match(/[?&]id=([A-Za-z][\w.]*)/);
+    if (m && APP_ID_RE.test(m[1])) return m[1];
+    return APP_ID_RE.test(t) ? t : null;
+  }
+  function appHref(pkg) {
+    if (!pkg || !APP_ID_RE.test(pkg)) return null;
+    const store = 'https://play.google.com/store/apps/details?id=' + pkg;
+    if (!IS_ANDROID) return null;
+    return `intent://#Intent;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;package=${pkg};S.browser_fallback_url=${encodeURIComponent(store)};end`;
   }
   function dirItem(name, sub, phone, website, email) {
     const actions = [];
@@ -1100,8 +1200,8 @@
     ).join('') + '</ul>';
   }
   const BUILT_IN_LINKS = [
-    { name: 'Medicare', url: 'https://www.medicare.gov' },
-    { name: 'Medi-Cal', url: 'https://www.dhcs.ca.gov/services/medi-cal' },
+    { name: 'Medicare', url: 'https://www.medicare.gov', phone: '800-633-4227' },
+    { name: 'Medi-Cal', url: 'https://www.dhcs.ca.gov/services/medi-cal', phone: '800-541-5555' },
   ];
   function normalizeUrl(u) {
     if (!u) return '#';
@@ -1109,11 +1209,14 @@
   }
   function renderQuickLinks() {
     const wrap = document.getElementById('link-list-wrap');
+    if (!wrap) return;
+    store.quickLinks.forEach(l => { if (l.url && !l.phone && /^[\d\s().+-]{7,}$/.test(l.url) && l.url.replace(/\D/g, '').length >= 7) { l.phone = l.url; l.url = ''; } });
     const all = [...BUILT_IN_LINKS.map(l => ({ ...l, builtIn: true })), ...store.quickLinks];
     if (!all.length) { wrap.innerHTML = '<div class="empty-state">No links added yet.</div>'; return; }
     wrap.innerHTML = '<div style="display:flex;flex-wrap:wrap;gap:10px">' + all.map(l => `
       <div style="display:flex;align-items:center;gap:8px;border:1px solid var(--border);border-radius:10px;padding:8px 12px;background:var(--panel)">
-        <a href="${normalizeUrl(l.url)}" target="_blank" rel="noopener" style="font-weight:600">${escapeHtml(l.name)}</a>
+        ${l.url ? `<a href="${escapeHtml(normalizeUrl(l.url))}" target="_blank" rel="noopener" style="font-weight:600">${escapeHtml(l.name)}</a>` : `<span style="font-weight:600">${escapeHtml(l.name)}</span>`}
+        ${l.phone && telHref(l.phone) ? `<a href="${telHref(l.phone)}" style="white-space:nowrap">📞 ${escapeHtml(l.phone)}</a>` : ''}
         ${l.builtIn ? '' : `<button type="button" class="ghost link-remove" data-id="${l.id}" style="padding:1px 8px;font-size:0.76rem">✕</button>`}
       </div>
     `).join('') + '</div>';
@@ -1123,15 +1226,20 @@
       renderQuickLinks();
     }));
   }
-  document.getElementById('link-form').addEventListener('submit', e => {
+  document.getElementById('link-form')?.addEventListener('submit', e => {
     e.preventDefault();
     const nameInput = document.getElementById('link-name');
     const urlInput = document.getElementById('link-url');
-    if (!nameInput.value.trim() || !urlInput.value.trim()) return;
-    store.quickLinks.push({ id: store.nextIds.link++, name: nameInput.value.trim(), url: urlInput.value.trim() });
+    const phoneInput = document.getElementById('link-phone');
+    let url = urlInput.value.trim(), phone = phoneInput.value.trim();
+    // A phone number typed in the website box goes where it belongs.
+    if (url && !phone && /^[\d\s().+-]{7,}$/.test(url) && url.replace(/\D/g, '').length >= 7) { phone = url; url = ''; }
+    if (!nameInput.value.trim() || (!url && !phone)) { alert('Add a name plus a website or phone number.'); return; }
+    store.quickLinks.push({ id: store.nextIds.link++, name: nameInput.value.trim(), url, phone });
     saveStore();
     nameInput.value = '';
     urlInput.value = '';
+    phoneInput.value = '';
     renderQuickLinks();
   });
   function updateEmailFormFields() {
@@ -1202,6 +1310,7 @@
     const downloads = await getDownloads();
     const csvBtn = document.getElementById('export-csv-btn');
     const pdfBtn = document.getElementById('export-pdf-btn');
+    if (!csvBtn || !pdfBtn) return; // exports removed from Lab work
     if (!downloads) { csvBtn.style.display = 'none'; pdfBtn.style.display = 'none'; return; }
 
     function sortedLogs() { return [...store.logs].sort((a, b) => (a.date < b.date ? -1 : 1)); }
@@ -1469,7 +1578,7 @@
       <div style="margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--border)">
         <div style="font-weight:600;margin-bottom:2px">${o.name}</div>
         <div style="font-size:0.9rem;color:var(--muted);margin-bottom:4px">${o.offers}</div>
-        <div style="font-size:0.88rem">${o.phone} &nbsp;·&nbsp; ${o.url ? `<a href="${o.url}" target="_blank" rel="noopener">${o.site}</a>` : o.site}</div>
+        <div style="font-size:0.88rem">${String(o.phone).replace(/\(?(\d{3})\)?[\s.-]*(\d{3})[\s.-](\d{4})/g, (m, a, b, c) => `<a href="tel:${a}${b}${c}">📞 ${m}</a>`)} &nbsp;·&nbsp; ${o.url ? `<a href="${o.url}" target="_blank" rel="noopener">${o.site}</a>` : o.site}</div>
       </div>
     `).join('');
   }
@@ -1954,14 +2063,14 @@
       card: m => {
         const ended = m.end && m.end < todayIso();
         const dueSoon = m.refillDue && !ended && m.refillDue <= new Date(Date.now() + 5 * 86400000).toISOString().slice(0, 10);
-        const url = gcalUrl(m);
+        const url = medCalLink(m);
         return {
           title: m.name, dim: ended, tag: ended ? 'Stopped' : '', flag: dueSoon ? 'Refill due ' + fmtDate(m.refillDue) : '',
           sub: [m.dose, m.frequency].filter(Boolean).join(', '),
           lines: [m.doctor ? 'Prescribed by ' + m.doctor : '', m.pharmacy ? 'Filled at ' + m.pharmacy + (m.rxNumber ? ', Rx ' + m.rxNumber : '') : '',
             (m.refillsRemaining ?? '') !== '' && m.refillsRemaining !== null ? m.refillsRemaining + ' refills left' + (m.refillDue && !dueSoon ? ', next due ' + fmtDate(m.refillDue) : '') : (m.refillDue && !dueSoon ? 'Next refill due ' + fmtDate(m.refillDue) : ''),
             m.start || m.end ? [m.start ? 'Started ' + fmtDate(m.start) : '', m.end ? 'Ends ' + fmtDate(m.end) : ''].filter(Boolean).join(', ') : '', m.notes],
-          links: url ? [{ href: url, text: '📅 Reminder' }] : [],
+          links: url ? [{ href: url, text: '📅 Set reminder in Calendar', self: IS_ANDROID }] : [],
         };
       },
     },
@@ -1987,6 +2096,13 @@
         const rows = Array.isArray(t.rows) && t.rows.length ? t.rows : (t.result && (!t.type || /Lab|BCR/i.test(t.type)) ? parseLabRows(t.result) : []);
         const anyFlag = rows.some(r => r.flag);
         let html = '';
+        if (t.pdfId) {
+          // Report with the original attached: keep it clean, just the original.
+          const flagged = rows.filter(r => r.flag).length;
+          return { title: (t.description || 'Lab report').replace(/ – .*$/, ''), flag: t.followup ? 'Follow-up' : (flagged ? flagged + ' out of range' : ''),
+            sub: fmtDate(t.date), html: `<button type="button" class="ghost view-pdf" data-pdf="${escapeHtml(t.pdfId)}">📄 View original report</button>`,
+            long: '', lines: [t.notes && t.notes !== 'Added from a shared or picked report' ? t.notes : ''] };
+        }
         if (rows.length) {
           html += `<div class="lab-wrap"><table class="lab-table"><thead><tr><th>Test</th><th>Result</th><th>Normal range</th><th>Units</th></tr></thead><tbody>${
             rows.map(r => `<tr${r.flag ? ' class="flagged"' : ''}><td>${escapeHtml(r.name)}</td><td>${escapeHtml(r.value)}${r.flag ? ' ' + escapeHtml(r.flag) : ''}</td><td>${escapeHtml(r.range || '')}</td><td>${escapeHtml(r.units || '')}</td></tr>`).join('')
@@ -2009,9 +2125,12 @@
     },
     appointments: {
       idKey: 'appt', noun: 'appointment', empty: 'No appointments yet.',
-      fields: [F('date', 'Date', 'date', { required: true }), F('provider', 'With', 'text', { list: 'doctor-names' }), F('notes', 'What it\'s for', 'textarea', { wide: true })],
+      fields: [F('date', 'Date', 'date', { required: true }), F('time', 'Time', 'time'), F('provider', 'With', 'text', { list: 'doctor-names' }),
+        F('location', 'Where', 'text', { wide: true, placeholder: 'e.g. clinic name or address' }), F('notes', 'What it\'s for', 'textarea', { wide: true })],
       sort: (a, b) => { const t = todayIso(); const pa = (a.date || '') < t, pb = (b.date || '') < t; return pa - pb || (pa ? byDateDesc(a, b) : -byDateDesc(a, b)); },
-      card: a => ({ title: fmtDate(a.date), tag: (a.date || '') >= todayIso() ? 'Upcoming' : '', dim: (a.date || '') < todayIso(), sub: a.provider, lines: [a.notes] }),
+      card: a => ({ title: fmtDate(a.date) + (a.time ? ', ' + fmtTime(a.time) : ''), tag: (a.date || '') >= todayIso() ? 'Upcoming' : '', dim: (a.date || '') < todayIso(),
+        sub: [a.provider, a.location].filter(Boolean).join(' · '), lines: [a.notes],
+        links: (a.date || '') >= todayIso() ? [{ href: apptCalLink(a), text: '📅 Add to Calendar', self: IS_ANDROID }].concat(a.location ? [{ href: 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(a.location), text: '📍 Map' }] : []) : [] }),
     },
     insurance: {
       idKey: 'insurance', noun: 'insurance plan', empty: 'No insurance plans added yet.',
@@ -2063,6 +2182,31 @@
         F('phone', 'Phone', 'tel'), F('website', 'Website', 'text', { inputmode: 'url' }), F('helps', 'What they help with', 'text', { wide: true })],
       card: o => ({ title: o.name, sub: [o.type, o.helps].filter(Boolean).join(', '), phone: o.phone, website: o.website }),
     },
+    quickLinks: {
+      idKey: 'link', noun: 'link', empty: '',
+      fields: [F('name', 'Name', 'text', { required: true, placeholder: 'e.g. MyChart, Labcorp, Medicare' }), F('url', 'Website', 'text', { wide: true, inputmode: 'url', placeholder: 'optional' }),
+        F('phone', 'Phone', 'tel', { placeholder: 'optional' }),
+        F('app', 'Open an app on your phone', 'select', { wide: true, options: [['', 'No app'], ...KNOWN_APPS.map(a => [a.id, a.name]), ['other', 'Another app (paste its Play Store link)']] }),
+        F('playLink', 'Play Store link', 'text', { wide: true, inputmode: 'url', showIf: ['app', 'other'], placeholder: 'In the Play Store, open the app, tap ⋮ then Share, then Copy' })],
+      sort: (a, b) => String(a.name || '').localeCompare(String(b.name || '')),
+      onChange: (key, wrap) => {
+        if (key !== 'app') return;
+        const sel = wrap.querySelector('[name=app]'), nameEl = wrap.querySelector('[name=name]');
+        const known = KNOWN_APPS.find(a => a.id === sel.value);
+        if (known && nameEl && !nameEl.value.trim()) nameEl.value = known.name.replace(/\s*\(.*\)$/, '');
+      },
+      beforeSave: v => {
+        if (v.url && !v.phone && /^[\d\s().+-]{7,}$/.test(v.url) && v.url.replace(/\D/g, '').length >= 7) { v.phone = v.url; v.url = ''; }
+        if (v.app === 'other') {
+          const id = appIdFrom(v.playLink);
+          if (!id) return "That doesn't look like a Play Store link. In the Play Store, open the app's page, tap ⋮, then Share, then Copy, and paste it here.";
+          v.appId = id;
+        } else { v.appId = v.app || ''; v.playLink = ''; }
+        if (!v.url && !v.phone && !v.appId) return 'Add a website, a phone number, or an app to open.';
+        return null;
+      },
+      card: l => { const h = appHref(l.appId); return { title: l.name, phone: l.phone, website: l.url, links: h ? [{ href: h, text: '📱 Open app', self: true }] : [] }; },
+    },
     places: {
       idKey: 'place', noun: 'place', empty: '',
       fields: [F('name', 'Name', 'text', { required: true, placeholder: 'e.g. Green Medical' }), F('kind', 'Kind of place', 'select', { options: ['Lab', 'Hospital', 'Clinic / medical office', 'Urgent care', 'Imaging center', 'Other'] }),
@@ -2086,7 +2230,7 @@
     const web = webHref(c.website);
     if (web) actions.push(`<a href="${escapeHtml(web)}" target="_blank" rel="noopener">🌐 Website</a>`);
     if (c.email) actions.push(`<a href="mailto:${escapeHtml(c.email)}">✉️ Email</a>`);
-    (c.links || []).forEach(l => actions.push(`<a href="${escapeHtml(l.href)}" target="_blank" rel="noopener">${escapeHtml(l.text)}</a>`));
+    (c.links || []).forEach(l => actions.push(`<a href="${escapeHtml(l.href)}"${l.self ? '' : ' target="_blank" rel="noopener"'}>${escapeHtml(l.text)}</a>`));
     const compact = !!(opts && opts.directory);
     let long = '';
     if (c.long && !compact) {
@@ -2104,7 +2248,7 @@
         ${c.html || ''}${long}${lines ? `<div class="rec-lines">${lines}</div>` : ''}
       </div>
       <div class="rec-side">
-        <button type="button" class="rec-edit" data-col="${col}" data-id="${item.id}" aria-label="Edit ${escapeHtml(c.title || SCHEMAS[col].noun)}">Edit</button>
+        <div class="rec-btns"><button type="button" class="rec-edit" data-col="${col}" data-id="${item.id}" aria-label="Edit ${escapeHtml(c.title || SCHEMAS[col].noun)}">Edit</button><button type="button" class="rec-del" data-col="${col}" data-id="${item.id}" aria-label="Delete ${escapeHtml(c.title || SCHEMAS[col].noun)}">Delete</button></div>
         ${actions.length ? `<div class="dir-actions">${actions.join('')}</div>` : ''}
       </div>
     </div>`;
@@ -2134,12 +2278,49 @@
   });
 
   // names the rest of the app already calls
-  function renderLogTable() { renderCollection('logs'); }
+  // Latest item shown; everything older sits behind a "Look up past results" button.
+  const pastOpen = new Set();
+  const isLabReport = t => !!t.pdfId || t.type === 'Lab / bloodwork';
+  function renderLatestWithPast(wrapId, key, groups, emptyMsg) {
+    const wrap = document.getElementById(wrapId);
+    if (!wrap) return;
+    const all = [];
+    groups.forEach(g => g.items.forEach(it => all.push({ col: g.col, it })));
+    all.sort((a, b) => ((a.it.date || '') > (b.it.date || '') ? -1 : 1));
+    if (!all.length) { wrap.innerHTML = `<div class="empty-state">${escapeHtml(emptyMsg)}</div>`; return; }
+    const latest = all[0], past = all.slice(1);
+    let html = recordCard(latest.col, latest.it);
+    if (past.length) {
+      const open = pastOpen.has(key);
+      html += `<button type="button" class="ghost past-toggle" data-past="${key}" style="margin-top:10px">${open ? 'Hide past results' : `🔎 Look up past results (${past.length})`}</button>`;
+      if (open) html += `<div style="margin-top:10px">${past.map(x => recordCard(x.col, x.it)).join('')}</div>`;
+    }
+    wrap.innerHTML = html;
+  }
+  document.addEventListener('click', e => {
+    const b = e.target.closest('.past-toggle');
+    if (!b) return;
+    const k = b.dataset.past;
+    if (pastOpen.has(k)) pastOpen.delete(k); else pastOpen.add(k);
+    k === 'lab' ? renderLogTable() : renderTestResults();
+  });
+  function renderLogTable() {
+    ensureCollection('logs'); ensureCollection('testResults');
+    const reports = store.testResults.filter(isLabReport);
+    const reportDates = new Set(reports.map(r => r.date));
+    // Blood-count entries that already have a full report on the same date are covered by that report.
+    const countsOnly = store.logs.filter(l => !reportDates.has(l.date));
+    renderLatestWithPast('list-logs', 'lab', [{ col: 'testResults', items: reports }, { col: 'logs', items: countsOnly }],
+      'No lab reports yet. Tap "+ Add lab report (PDF)" or share a report from Labcorp to this app.');
+  }
   function renderAppointments() { renderCollection('appointments'); }
   function renderInsurance() { renderCollection('insurance'); }
   function renderDoctors() { renderCollection('doctors'); }
   function renderVisits() { renderCollection('visits'); }
-  function renderTestResults() { renderCollection('testResults'); }
+  function renderTestResults() {
+    ensureCollection('testResults');
+    renderLatestWithPast('list-testResults', 'tests', [{ col: 'testResults', items: store.testResults.filter(t => !isLabReport(t)) }], 'No other test results yet.');
+  }
   function renderSymptoms() { renderCollection('symptoms'); }
   function renderMedications() { renderCollection('medications'); }
   function renderPharmacies() { renderCollection('pharmacies'); }
@@ -2155,6 +2336,15 @@
     const groups = [];
     const add = (label, col, items) => { if (items && items.length) groups.push(`<div class="dir-group"><h4>${escapeHtml(label)}</h4>${items.map(it => recordCard(col, it, { directory: true })).join('')}</div>`); };
     add('Doctors & providers', 'doctors', store.doctors);
+    ensureCollection('quickLinks');
+    if (!store.linksSeeded) {
+      // Medicare / Medi-Cal used to be fixed links; now they're normal entries you can edit or delete.
+      [{ name: 'Medicare', url: 'https://www.medicare.gov', phone: '800-633-4227' }, { name: 'Medi-Cal', url: 'https://www.dhcs.ca.gov/services/medi-cal', phone: '800-541-5555' }]
+        .forEach(b => { if (!store.quickLinks.some(l => l.name === b.name)) store.quickLinks.push(Object.assign({ id: store.nextIds.link++ }, b)); });
+      store.linksSeeded = true; saveStore();
+    }
+    store.quickLinks.forEach(l => { if (l.url && !l.phone && /^[\d\s().+-]{7,}$/.test(l.url) && l.url.replace(/\D/g, '').length >= 7) { l.phone = l.url; l.url = ''; } });
+    add('Websites & quick links', 'quickLinks', [...store.quickLinks].sort(SCHEMAS.quickLinks.sort));
     KIND_ORDER.forEach(kind => add(KIND_LABEL[kind], 'places', (store.places || []).filter(pl => (KIND_ORDER.includes(pl.kind) ? pl.kind : 'Other') === kind)));
     add('Pharmacies', 'pharmacies', store.pharmacies);
     add('Insurance', 'insurance', store.insurance);
@@ -2193,7 +2383,8 @@
         const extra = [f.list ? `list="${f.list}"` : '', f.step !== undefined ? `step="${f.step}"` : '', f.min !== undefined ? `min="${f.min}"` : '', f.inputmode ? `inputmode="${f.inputmode}"` : '', f.type === 'number' ? 'inputmode="decimal"' : ''].filter(Boolean).join(' ');
         input = `<input type="${f.type}" ${common} ${extra} value="${escapeHtml(val ?? '')}">`;
       }
-      return `<div class="${wide.trim()}"><label for="${id}">${escapeHtml(f.label)}${f.required ? ' *' : ''}</label>${input}</div>`;
+      const showIf = f.showIf ? ` data-show-key="${f.showIf[0]}" data-show-val="${escapeHtml(f.showIf[1])}"` : '';
+      return `<div class="${wide.trim()}"${showIf}><label for="${id}">${escapeHtml(f.label)}${f.required ? ' *' : ''}</label>${input}</div>`;
     }
 
     function open(col, id, prefill) {
@@ -2208,6 +2399,7 @@
       if (!item) sch.fields.forEach(f => { if (f.type === 'date' && f.required) defaults[f.key] = todayIso(); if (f.type === 'select' && f.options && !f.options.includes('')) defaults[f.key] = Array.isArray(f.options[0]) ? f.options[0][0] : f.options[0]; });
       if (!item && prefill) Object.assign(defaults, prefill);
       fieldsWrap.innerHTML = sch.fields.map((f, i) => fieldHtml(f, item ? item[f.key] : defaults[f.key], i)).join('');
+      applyShowIf();
       delBtn.style.display = item ? '' : 'none';
       errEl.textContent = '';
       lastFocus = document.activeElement;
@@ -2217,6 +2409,19 @@
       if (first && !item) setTimeout(() => first.focus(), 30);
       else overlay.querySelector('.modal').focus?.();
     }
+    function applyShowIf() {
+      fieldsWrap.querySelectorAll('[data-show-key]').forEach(box => {
+        const src = fieldsWrap.querySelector(`[name="${box.dataset.showKey}"]`);
+        box.hidden = !src || src.value !== box.dataset.showVal;
+      });
+    }
+    fieldsWrap.addEventListener('change', e => {
+      const key = e.target && e.target.name;
+      if (!key || !current) return;
+      const sch = SCHEMAS[current.col];
+      if (sch.onChange) sch.onChange(key, fieldsWrap);
+      applyShowIf();
+    });
     function close() {
       overlay.hidden = true;
       document.body.classList.remove('modal-open');
@@ -2244,6 +2449,7 @@
         if (f.required && (vals[f.key] === '' || vals[f.key] === null) && !missing) missing = { f, el };
       });
       if (missing) { errEl.textContent = `Please fill in "${missing.f.label}".`; missing.el.focus(); return; }
+      if (sch.beforeSave) { const err = sch.beforeSave(vals); if (err) { errEl.textContent = err; return; } }
       ensureCollection(col);
       if (current.id) {
         const item = store[col].find(x => x.id === current.id);
@@ -2272,6 +2478,20 @@
     document.addEventListener('click', e => {
       const addBtn = e.target.closest('[data-add]');
       if (addBtn && SCHEMAS[addBtn.dataset.add]) { open(addBtn.dataset.add); return; }
+      const del = e.target.closest('.rec-del');
+      if (del) {
+        const col = del.dataset.col, id = +del.dataset.id;
+        const item = (store[col] || []).find(x => x.id === id);
+        if (!item) return;
+        const name = SCHEMAS[col].card(item).title || SCHEMAS[col].noun;
+        if (!confirm(`Delete ${name}? This can't be undone.`)) return;
+        store[col] = store[col].filter(x => x.id !== id);
+        if (item.pdfId) pdfFiles.del(item.pdfId).catch(() => {});
+        saveStore();
+        renderAll();
+        showToast(`Deleted ${name}.`);
+        return;
+      }
       const edit = e.target.closest('.rec-edit');
       if (edit) { open(edit.dataset.col, Number(edit.dataset.id)); return; }
       const more = e.target.closest('.rec-more');
@@ -2282,7 +2502,50 @@
     });
   })();
 
+  // ---------- calendar (Home) ----------
+  const calState = { y: new Date().getFullYear(), m: new Date().getMonth(), sel: null };
+  function calEvents() {
+    const ev = {};
+    const add = (d, kind, text, goto) => { if (!d) return; (ev[d] = ev[d] || []).push({ kind, text, goto }); };
+    (store.appointments || []).forEach(a => add(a.date, 'appt', (a.time ? fmtTime(a.time) + ' – ' : '') + 'Appointment' + (a.provider ? ' with ' + a.provider : '') + (a.location ? ' · ' + a.location : ''), 'tracker'));
+    (store.logs || []).forEach(l => add(l.date, 'lab', 'Blood counts logged', 'tracker'));
+    (store.testResults || []).forEach(t => add(t.date, 'lab', (t.description || t.type || 'Test result').replace(/ – .*$/, ''), 'tracker'));
+    (store.medications || []).forEach(m => add(m.refillDue, 'refill', 'Refill due: ' + m.name, 'tracker'));
+    return ev;
+  }
+  function renderCalendar() {
+    const grid = document.getElementById('cal-grid');
+    if (!grid) return;
+    const { y, m } = calState;
+    document.getElementById('cal-title').textContent = new Date(y, m, 1).toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
+    const ev = calEvents();
+    const first = new Date(y, m, 1).getDay(), days = new Date(y, m + 1, 0).getDate();
+    const iso = d => `${y}-${String(m + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+    let html = ['S', 'M', 'T', 'W', 'T', 'F', 'S'].map(d => `<div class="dow">${d}</div>`).join('');
+    for (let i = 0; i < first; i++) html += '<div class="cal-cell blank"></div>';
+    for (let d = 1; d <= days; d++) {
+      const k = iso(d), list = ev[k] || [];
+      const kinds = [...new Set(list.map(e => e.kind))];
+      html += `<button type="button" class="cal-cell${k === todayIso() ? ' today' : ''}${k === calState.sel ? ' sel' : ''}" data-day="${k}" aria-label="${k}${list.length ? ', ' + list.length + ' items' : ''}"><span class="n">${d}</span><span class="dots">${kinds.map(x => `<i class="dot ${x}"></i>`).join('')}</span></button>`;
+    }
+    grid.innerHTML = html;
+    const dayEl = document.getElementById('cal-day');
+    if (calState.sel && ev[calState.sel]) {
+      dayEl.innerHTML = `<strong>${escapeHtml(fmtDate(calState.sel))}</strong>` + ev[calState.sel].map(e => `<div class="item"><i class="dot ${e.kind}" style="margin-right:6px"></i>${escapeHtml(e.text)}</div>`).join('');
+    } else if (calState.sel) {
+      dayEl.innerHTML = `<strong>${escapeHtml(fmtDate(calState.sel))}</strong><div class="item" style="color:var(--muted)">Nothing on this day.</div>`;
+    } else dayEl.innerHTML = '<span style="color:var(--muted)">Tap a day to see what\'s on it.</span>';
+  }
+  document.addEventListener('click', e => {
+    const nav = e.target.closest('.cal-nav');
+    if (nav) { calState.m += +nav.dataset.cal; if (calState.m < 0) { calState.m = 11; calState.y--; } if (calState.m > 11) { calState.m = 0; calState.y++; } renderCalendar(); return; }
+    const cell = e.target.closest('.cal-cell[data-day]');
+    if (cell) { calState.sel = cell.dataset.day; renderCalendar(); return; }
+    if (e.target.closest('#cal-add-appt')) openRecordEditor('appointments', null, calState.sel ? { date: calState.sel } : null);
+  });
+
   function renderAll() {
+    renderCalendar();
     renderHealthSummary();
     renderLogTable(); renderAppointments(); renderInsurance(); renderDoctors(); renderVisits(); renderSymptoms();
     renderMedications(); renderCaseManagers(); renderPharmacies(); renderSupportContacts(); renderDirectory();
@@ -2423,7 +2686,7 @@
       pdfId = 'pdf-' + Date.now();
       try { await pdfFiles.put(pdfId, blob); } catch (e) { console.error('saving original failed', e); pdfId = ''; }
     }
-    const title = (source ? source + ' ' : '') + 'lab report' + (name ? ' – ' + name : '');
+    const title = (source ? source + ' ' : '') + 'lab report';
     const rec = { id: store.nextIds.testResult++, date, type: 'Lab / bloodwork', description: title, orderedBy: '', followup: false,
       result: text, rows, notes: 'Added from a shared or picked report', pdfId };
     store.testResults.push(rec);
@@ -2624,6 +2887,7 @@
   })();
 
   // ---------- init ----------
+  renderCalendar();
   renderHealthSummary();
   { const erDate = document.getElementById('er-date'); if (erDate && !erDate.value) erDate.valueAsDate = new Date(); }
   renderLogTable();
