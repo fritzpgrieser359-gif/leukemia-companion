@@ -111,12 +111,13 @@
   textarea { resize: vertical; min-height: 70px; }
   .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 
-  button.primary {
+  button.primary, label.primary {
     background: var(--accent); color: #fff; border: none; border-radius: 8px;
     padding: 10px 18px; font-family: inherit; font-weight: 600; font-size: 0.95rem;
     cursor: pointer; margin-top: 16px;
   }
-  button.primary:hover { background: var(--accent-dark); }
+  button.primary:hover, label.primary:hover { background: var(--accent-dark); }
+  label.primary { display: inline-block; text-align: center; }
   button.ghost {
     background: none; border: 1px solid var(--border); color: var(--text);
     border-radius: 8px; padding: 9px 16px; font-family: inherit; cursor: pointer; font-size: 0.9rem;
@@ -198,6 +199,11 @@
   .rec-lines div { overflow-wrap: anywhere; }
   .rec-pre { white-space: pre-line; }
   .lab-wrap { overflow-x: auto; margin-top: 8px; }
+  details.fold > summary { cursor: pointer; font-family: 'Newsreader', Georgia, serif; font-weight: 600; font-size: 1.08rem; list-style: none; display: flex; justify-content: space-between; align-items: center; }
+  details.fold > summary::-webkit-details-marker { display: none; }
+  details.fold > summary::after { content: '▾'; color: var(--accent); font-size: 1rem; }
+  details.fold[open] > summary::after { content: '▴'; }
+  details.fold[open] > summary { margin-bottom: 12px; }
   .cal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
   .cal-nav { font-size: 1.3rem; line-height: 1; padding: 4px 14px; }
   .cal-legend { display: flex; flex-wrap: wrap; gap: 12px; font-size: 0.78rem; color: var(--muted); margin-bottom: 8px; }
@@ -300,16 +306,12 @@
   <!-- HOME -->
   <div class="view active" id="view-home">
     <div class="hero">
-      <h1>Track labs. Learn the basics. Talk to people who get it.</h1>
-      <p>A small companion tool for logging bloodwork and symptoms, reading plain-language explanations of leukemia types, and swapping notes with others.</p>
+      <h1>Your labs, meds, and care team in one place.</h1>
+      <p>Share a lab report from Labcorp and it's saved here with the original. Keep track of medications, appointments, doctors, and questions for your next visit. Everything stays on this phone.</p>
     </div>
-    <div class="card-grid">
-      <div class="card" data-goto="tracker"><div class="kicker">Log &amp; chart</div><h3>My Health</h3><p style="margin:0">Allergies, conditions, medications, blood counts, symptoms, appointments, and insurance.</p></div>
-      <div class="card" data-goto="careteam"><div class="kicker">Contacts &amp; history</div><h3>Care Team</h3><p style="margin:0">Keep every doctor's info and a running log of what happened at each visit.</p></div>
-      <div class="card" data-goto="support"><div class="kicker">Personal network</div><h3>Support</h3><p style="margin:0">Friends and family who help out — who to call, who drives you places, who's your emergency contact.</p></div>
-      <div class="card" data-goto="directory"><div class="kicker">One-tap contacts</div><h3>Directory</h3><p style="margin:0">Every doctor, pharmacy, case manager, and support contact in one list — tap to call or open their website.</p></div>
-      <div class="card" data-goto="education"><div class="kicker">Reference</div><h3>Helpful Info</h3><p style="margin:0">Plain-language pages on ALL, AML, CLL, CML, and a glossary of terms.</p></div>
-      <div class="card" data-goto="community"><div class="kicker">Journal</div><h3>My Notes</h3><p style="margin:0">A private space for freeform notes — visible only in this browser.</p></div>
+    <div class="panel">
+      <h3 style="margin-bottom:6px">Today</h3>
+      <div id="due-today-wrap"><div class="empty-state">No medications tracked yet.</div></div>
     </div>
     <div class="panel" id="cal-panel">
       <div class="cal-head">
@@ -327,7 +329,7 @@
     </div>
     <div class="panel" id="labpdf-panel">
       <h3 style="margin-bottom:6px">Add a lab report</h3>
-      <p style="color:var(--muted);margin-bottom:14px;font-size:0.88rem">Got results from Labcorp, Quest, or your doctor as a PDF? Save it to your phone, then pick it here. The app reads your blood counts (WBC, ANC, platelets, hemoglobin) and fills them in for you to check before saving.</p>
+      <p style="color:var(--muted);margin-bottom:14px;font-size:0.88rem">Got results from Labcorp, Quest, or your doctor as a PDF? In the Labcorp app, tap Share and pick Leukemia Companion, or save the PDF and pick it here. The whole report and the original are saved, and your blood counts go on your chart automatically.</p>
       <label for="labpdf-input" class="primary" role="button" tabindex="0" style="display:inline-block;cursor:pointer;margin:0">Choose lab report PDF</label>
       <input type="file" id="labpdf-input" accept="application/pdf,.pdf" style="position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;pointer-events:none">
       <div id="labpdf-status" style="margin-top:10px;font-size:0.88rem;color:var(--muted)"></div>
@@ -350,8 +352,8 @@
         </div>
       </details>
     </div>
-    <div class="panel">
-      <h3 style="margin-bottom:6px">Add from email</h3>
+    <details class="panel fold">
+      <summary>Add from email (paste the text)</summary>
       <p style="color:var(--muted);margin-bottom:14px;font-size:0.88rem">If something only ever reaches you by email — a result, a doctor's after-visit note, a report — paste the text here instead of retyping it. It's filed with today's date into the right place automatically.</p>
       <form id="email-result-form">
         <label>What kind of entry is this</label>
@@ -384,13 +386,12 @@
         <textarea id="er-content" placeholder="Paste the result text from the email" style="min-height:110px" required></textarea>
         <button type="submit" class="primary">Save</button>
       </form>
-    </div>
+    </details>
     <div class="panel" id="mychart-import-panel">
       <h3 style="margin-bottom:6px">Import from MyChart</h3>
       <p style="color:var(--muted);margin-bottom:14px;font-size:0.88rem">In MyChart, download your health summary (it saves as a .zip file), then pick that file here. Your allergies, conditions, medications, lab results, doctors, visits and insurance are read on this phone and added to the app. Your records stay on this device.</p>
       <label for="mychart-file-input" class="primary" id="mychart-pick-btn" role="button" tabindex="0" style="display:inline-block;cursor:pointer;margin:0">Choose MyChart file</label>
       <input type="file" id="mychart-file-input" accept=".zip,.xml,application/zip,application/x-zip-compressed,text/xml,application/xml,*/*" style="position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;pointer-events:none">
-      <p style="margin-top:10px;font-size:0.8rem;color:var(--muted)">If tapping the button does nothing, open this app in Chrome instead of inside the Claude app.</p>
       <div id="mychart-status" style="margin-top:10px;font-size:0.88rem;color:var(--muted)"></div>
       <div id="mychart-preview" style="display:none;margin-top:12px">
         <p style="margin-bottom:8px;font-size:0.9rem">Here's what was found. Uncheck anything you don't want, then add it.</p>
@@ -401,11 +402,9 @@
         </div>
       </div>
     </div>
-    <div class="panel">
-      <h3 style="margin-bottom:6px">Today</h3>
-      <div id="due-today-wrap"><div class="empty-state">No medications tracked yet.</div></div>
-    </div>
-    <div class="panel">
+    <details class="panel fold settings-fold">
+      <summary>⚙️ Settings: backup &amp; PIN lock</summary>
+    <div class="panel" style="margin-top:12px">
       <h3 style="margin-bottom:6px">Data &amp; backup</h3>
       <p style="color:var(--muted);margin-bottom:14px">Everything you enter is stored only in this browser. Download a backup periodically, or if you're moving to a new device — you can restore it here or in a fresh copy of this app.</p>
       <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
@@ -415,7 +414,7 @@
       </div>
       <div id="backup-status" style="margin-top:10px;font-size:0.85rem;color:var(--muted)"></div>
     </div>
-    <div class="panel">
+    <div class="panel" style="margin-top:12px">
       <h3 style="margin-bottom:6px">PIN lock</h3>
       <p style="color:var(--muted);margin-bottom:14px">Adds a PIN screen before this app opens on this device. This is a privacy screen, not encryption — the underlying data in this browser isn't scrambled, so it mainly stops casual glances, not someone with real access to the device.</p>
       <div id="pin-status-line" style="font-size:0.88rem;margin-bottom:12px;color:var(--muted)">No PIN set.</div>
@@ -425,6 +424,7 @@
         <button type="button" class="ghost" id="pin-lock-now-btn" style="display:none">Lock now</button>
       </div>
     </div>
+    </details>
   </div>
 
   <!-- TRACKER -->
