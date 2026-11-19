@@ -82,6 +82,8 @@
   }
   .tab-btn:hover { background: var(--accent-soft); color: var(--text); }
   .tab-btn.active { background: var(--accent); color: #fff; }
+  .tab-btn .ti { margin-right: 5px; }
+  @media (max-width: 600px) { .tab-btn .ti { margin-right: 0; } }
 
   .container { max-width: 760px; margin: 0 auto; padding: 32px 24px 80px; }
   .view { display: none; }
@@ -111,12 +113,13 @@
   textarea { resize: vertical; min-height: 70px; }
   .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 
-  button.primary {
+  button.primary, label.primary {
     background: var(--accent); color: #fff; border: none; border-radius: 8px;
     padding: 10px 18px; font-family: inherit; font-weight: 600; font-size: 0.95rem;
     cursor: pointer; margin-top: 16px;
   }
-  button.primary:hover { background: var(--accent-dark); }
+  button.primary:hover, label.primary:hover { background: var(--accent-dark); }
+  label.primary { display: inline-block; text-align: center; }
   button.ghost {
     background: none; border: 1px solid var(--border); color: var(--text);
     border-radius: 8px; padding: 9px 16px; font-family: inherit; cursor: pointer; font-size: 0.9rem;
@@ -146,12 +149,13 @@
   [id$="-list-wrap"], #log-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
   @media (max-width: 600px) {
     .topbar { flex-wrap: wrap; gap: 8px; padding: 12px 16px; }
-    .tabs { overflow-x: auto; max-width: 100%; }
-    .tab-btn { white-space: nowrap; }
+    .tabs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; width: 100%; }
+    .tab-btn { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 6px 2px; font-size: 0.78rem; line-height: 1.15; text-align: center; }
+    .tab-btn .ti { font-size: 1.25rem; line-height: 1; }
   }
   .dir-actions a {
     display: inline-flex; align-items: center; gap: 5px; background: var(--accent-soft); color: var(--accent-dark);
-    border-radius: 8px; padding: 7px 12px; font-size: 0.83rem; font-weight: 600; text-decoration: none; white-space: nowrap;
+    border-radius: 10px; padding: 10px 14px; min-height: 44px; font-size: 0.98rem; font-weight: 600; text-decoration: none; white-space: nowrap;
   }
   .dir-actions a:hover { background: var(--accent); color: #fff; }
   .post-item .meta { color: var(--muted); font-size: 0.85rem; }
@@ -198,6 +202,53 @@
   .rec-lines div { overflow-wrap: anywhere; }
   .rec-pre { white-space: pre-line; }
   .lab-wrap { overflow-x: auto; margin-top: 8px; }
+  details.fold > summary { cursor: pointer; font-family: 'Newsreader', Georgia, serif; font-weight: 600; font-size: 1.08rem; list-style: none; display: flex; justify-content: space-between; align-items: center; }
+  details.fold > summary::-webkit-details-marker { display: none; }
+  details.fold > summary::after { content: '▾'; color: var(--accent); font-size: 1rem; }
+  details.fold[open] > summary::after { content: '▴'; }
+  details.fold[open] > summary { margin-bottom: 12px; }
+  .cal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+  .cal-nav { font-size: 1.3rem; line-height: 1; padding: 4px 14px; }
+  .cal-legend { display: flex; flex-wrap: wrap; gap: 12px; font-size: 0.78rem; color: var(--muted); margin-bottom: 8px; }
+  .cal-legend i { display: inline-block; margin-right: 5px; vertical-align: 1px; }
+  .dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; }
+  .dot.appt { background: var(--accent); } .dot.lab { background: #7a6bb0; } .dot.refill { background: var(--warn); } .dot.vax { background: #3d7fb5; }
+  .dose-row { display: flex; align-items: flex-start; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--border); cursor: pointer; }
+  .dose-row:last-child { border-bottom: none; }
+  .dose-row input { width: 22px; height: 22px; margin: 2px 0 0; flex: none; accent-color: var(--accent); }
+  .dose-row .dose-info { flex: 1; }
+  .dose-row.done .dose-name { text-decoration: line-through; color: var(--muted); }
+  .dose-taken { color: var(--accent); font-size: 0.82rem; font-weight: 600; white-space: nowrap; }
+  .dose-summary { font-size: 0.85rem; color: var(--muted); margin: 2px 0 6px; }
+  .quick-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+  .quick-row button { margin: 0; }
+  .vchart { margin: 4px 0 12px; }
+  .vchart select { width: auto; margin: 0 0 8px; }
+  .vchart svg { width: 100%; height: auto; display: block; }
+  .vchart .vlab { font-size: 11px; fill: var(--muted); }
+  .ice-modal h2 { margin: 0 0 4px; color: var(--warn); }
+  .ice-sec { margin-top: 14px; }
+  .ice-sec h4 { margin: 0 0 4px; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); }
+  .ice-sec div { font-size: 0.98rem; line-height: 1.5; }
+  .ice-big { font-size: 1.15rem; font-weight: 700; }
+  .ice-tip { margin-top: 14px; font-size: 0.82rem; color: var(--muted); background: var(--accent-soft); border-radius: 8px; padding: 8px 10px; }
+  @media print {
+    #print-area h2 { font-size: 1.05rem; margin: 16px 0 6px; border-bottom: 1px solid #999; padding-bottom: 2px; }
+    #print-area table { border-collapse: collapse; width: 100%; font-size: 0.88rem; }
+    #print-area th, #print-area td { border: 1px solid #bbb; padding: 4px 6px; text-align: left; vertical-align: top; }
+    #print-area ul { margin: 0; padding-left: 18px; }
+    #print-area p { margin: 2px 0; }
+  }
+  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
+  .cal-grid .dow { text-align: center; font-size: 0.72rem; color: var(--muted); padding: 2px 0; }
+  .cal-cell { min-height: 44px; border: 1px solid var(--border); border-radius: 8px; background: var(--panel); padding: 3px; display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer; font: inherit; color: inherit; }
+  .cal-cell.blank { border: 0; background: none; cursor: default; }
+  .cal-cell .n { font-size: 0.82rem; }
+  .cal-cell .dots { display: flex; gap: 2px; flex-wrap: wrap; justify-content: center; }
+  .cal-cell.today { border-color: var(--accent); border-width: 2px; }
+  .cal-cell.sel { background: var(--accent-soft); }
+  .cal-day { margin-top: 10px; font-size: 0.9rem; }
+  .cal-day .item { padding: 8px 0; border-bottom: 1px solid var(--border); }
   .lab-table { width: 100%; border-collapse: collapse; font-size: 0.86rem; }
   .lab-table th { text-align: left; font-weight: 600; color: var(--muted); font-size: 0.76rem; padding: 4px 8px 4px 0; border-bottom: 1px solid var(--border, rgba(0,0,0,.12)); }
   .lab-table td { padding: 5px 8px 5px 0; border-bottom: 1px solid var(--border, rgba(0,0,0,.08)); vertical-align: top; }
@@ -216,8 +267,11 @@
   .rec-vals .out-of-range { color: var(--warn); font-weight: 600; }
   .rec-side { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; flex-shrink: 0; }
   .rec-side .dir-actions { justify-content: flex-end; }
-  .rec-edit { background: none; border: 1px solid var(--border); color: var(--text); border-radius: 8px; padding: 5px 12px; font: inherit; font-size: 0.82rem; cursor: pointer; }
+  .rec-edit { background: none; border: 1px solid var(--border); color: var(--text); border-radius: 10px; padding: 8px 14px; min-height: 40px; font: inherit; font-size: 0.92rem; cursor: pointer; }
   .rec-edit:hover { border-color: var(--accent); }
+  .rec-btns { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+  .rec-del { background: none; border: 1px solid var(--border); color: var(--warn); border-radius: 10px; padding: 8px 14px; min-height: 40px; font: inherit; font-size: 0.92rem; cursor: pointer; }
+  .rec-del:hover { border-color: var(--warn); background: var(--warn-soft); }
   .rec-more { font-size: 0.82rem; color: var(--accent); background: none; border: none; padding: 4px 0 0; cursor: pointer; font: inherit; font-size: 0.82rem; text-decoration: underline; }
   @media (max-width: 520px) {
     .rec-card.has-actions { flex-wrap: wrap; }
@@ -227,7 +281,8 @@
   }
   .modal-overlay { position: fixed; inset: 0; background: rgba(15, 23, 20, 0.45); z-index: 50; display: flex; align-items: flex-end; justify-content: center; padding: 12px; padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px)); }
   .modal-overlay[hidden] { display: none; }
-  .modal { background: var(--panel); border-radius: 14px; width: 100%; max-width: 560px; max-height: 88vh; overflow-y: auto; padding: 20px 20px 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.25); }
+  #edit-fields [hidden] { display: none !important; }
+  .modal { background: var(--panel); border-radius: 14px; width: 100%; max-width: 560px; max-height: 88vh; max-height: 88dvh; overflow-y: auto; padding: 20px 20px 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.25); }
   @media (min-width: 640px) { .modal-overlay { align-items: center; } }
   .edit-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 14px; }
   .edit-grid .wide { grid-column: 1 / -1; }
@@ -240,6 +295,32 @@
   .danger-btn { margin-left: auto; background: none; border: 1px solid var(--warn); color: var(--warn); border-radius: 8px; padding: 9px 14px; font: inherit; font-size: 0.9rem; cursor: pointer; }
   .danger-btn:hover { background: var(--warn-soft); }
   body.modal-open { overflow: hidden; }
+  .brand-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .search-open { background: var(--accent-soft); color: var(--accent-dark); border: none; border-radius: 999px; padding: 7px 14px; margin: 0; font: inherit; font-size: 0.9rem; font-weight: 600; cursor: pointer; white-space: nowrap; }
+  .search-open:hover { background: var(--accent); color: #fff; }
+  @media (max-width: 600px) { .brand-row { width: 100%; } }
+  .search-overlay { position: fixed; inset: 0; background: rgba(20, 30, 28, 0.4); z-index: 60; display: flex; justify-content: center; align-items: flex-start; padding: 12px; }
+  .search-overlay[hidden] { display: none; }
+  .search-box { background: var(--panel); width: 100%; max-width: 640px; max-height: calc(100vh - 24px); max-height: calc(100dvh - 24px); display: flex; flex-direction: column; border-radius: 14px; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.25); }
+  .search-head { display: flex; gap: 8px; align-items: center; padding: 12px; border-bottom: 1px solid var(--border); }
+  .search-head input { flex: 1; margin: 0; font-size: 1rem; }
+  .search-head button { margin: 0; }
+  .search-results { overflow-y: auto; padding: 4px 14px 14px; }
+  .search-hint { color: var(--muted); font-size: 0.92rem; padding: 14px 2px; line-height: 1.5; }
+  .sr-item { display: block; width: 100%; text-align: left; background: none; border: none; border-bottom: 1px solid var(--border); padding: 11px 2px; margin: 0; color: var(--text); font: inherit; cursor: pointer; }
+  .sr-item:hover, .sr-item:focus { background: var(--accent-soft); outline: none; }
+  .sr-kind { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent); font-weight: 700; }
+  .sr-title { font-weight: 600; margin: 1px 0; }
+  .sr-sub { font-size: 0.86rem; color: var(--muted); line-height: 1.4; }
+  .search-results mark { background: #ffe58a; color: inherit; border-radius: 2px; padding: 0 1px; }
+  .sr-web { margin-top: 14px; padding-top: 4px; }
+  .sr-web-title { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); font-weight: 700; margin: 6px 2px 8px; }
+  .sr-web a { display: flex; align-items: center; gap: 8px; background: var(--accent-soft); color: var(--accent-dark); border-radius: 10px; padding: 11px 14px; margin-bottom: 8px; text-decoration: none; font-weight: 600; font-size: 0.95rem; }
+  .sr-web a:hover { background: var(--accent); color: #fff; }
+  .sr-web small { display: block; font-weight: 400; color: var(--muted); font-size: 0.8rem; }
+  .sr-web a:hover small { color: #fff; }
+  .sr-flash { animation: srflash 2.4s ease; }
+  @keyframes srflash { 0%, 65% { box-shadow: 0 0 0 3px var(--accent); } 100% { box-shadow: 0 0 0 0 transparent; } }
   .list-toggle { display: block; width: 100%; margin-top: 10px; padding: 10px; background: none; border: 1px dashed var(--border); border-radius: 8px; color: var(--accent); font: inherit; font-weight: 600; font-size: 0.9rem; cursor: pointer; }
   .list-toggle:hover { border-color: var(--accent); }
 </style>
@@ -264,15 +345,16 @@
 </div>
 
 <div class="topbar">
-  <div class="brand">Leukemia Companion</div>
+  <div class="brand-row"><div class="brand">Leukemia Companion</div><button type="button" id="search-open" class="search-open" aria-label="Search the app">🔍 Search</button></div>
   <div class="tabs">
-    <button class="tab-btn active" data-view="home">🏠 Home</button>
-    <button class="tab-btn" data-view="tracker">📋 My Health</button>
-    <button class="tab-btn" data-view="careteam">👩‍⚕️ Care Team</button>
-    <button class="tab-btn" data-view="support">🤝 Support</button>
-    <button class="tab-btn" data-view="directory">📇 Directory</button>
-    <button class="tab-btn" data-view="education">📚 Helpful Info</button>
-    <button class="tab-btn" data-view="community">📝 My Notes</button>
+    <button class="tab-btn active" data-view="home"><span class="ti">🏠</span><span class="tl">Home</span></button>
+    <button class="tab-btn" data-view="tracker"><span class="ti">📋</span><span class="tl">My Health</span></button>
+    <button class="tab-btn" data-view="daily"><span class="ti">📅</span><span class="tl">Day to Day</span></button>
+    <button class="tab-btn" data-view="careteam"><span class="ti">👩‍⚕️</span><span class="tl">Care Team</span></button>
+    <button class="tab-btn" data-view="support"><span class="ti">🤝</span><span class="tl">Support</span></button>
+    <button class="tab-btn" data-view="directory"><span class="ti">📇</span><span class="tl">Directory</span></button>
+    <button class="tab-btn" data-view="education"><span class="ti">📚</span><span class="tl">Helpful Info</span></button>
+    <button class="tab-btn" data-view="community"><span class="ti">📝</span><span class="tl">My Notes</span></button>
   </div>
 </div>
 
@@ -281,50 +363,32 @@
   <!-- HOME -->
   <div class="view active" id="view-home">
     <div class="hero">
-      <h1>Track labs. Learn the basics. Talk to people who get it.</h1>
-      <p>A small companion tool for logging bloodwork and symptoms, reading plain-language explanations of leukemia types, and swapping notes with others.</p>
-    </div>
-    <div class="card-grid">
-      <div class="card" data-goto="tracker"><div class="kicker">Log &amp; chart</div><h3>My Health</h3><p style="margin:0">Allergies, conditions, medications, blood counts, symptoms, appointments, and insurance.</p></div>
-      <div class="card" data-goto="careteam"><div class="kicker">Contacts &amp; history</div><h3>Care Team</h3><p style="margin:0">Keep every doctor's info and a running log of what happened at each visit.</p></div>
-      <div class="card" data-goto="support"><div class="kicker">Personal network</div><h3>Support</h3><p style="margin:0">Friends and family who help out — who to call, who drives you places, who's your emergency contact.</p></div>
-      <div class="card" data-goto="directory"><div class="kicker">One-tap contacts</div><h3>Directory</h3><p style="margin:0">Every doctor, pharmacy, case manager, and support contact in one list — tap to call or open their website.</p></div>
-      <div class="card" data-goto="education"><div class="kicker">Reference</div><h3>Helpful Info</h3><p style="margin:0">Plain-language pages on ALL, AML, CLL, CML, and a glossary of terms.</p></div>
-      <div class="card" data-goto="community"><div class="kicker">Journal</div><h3>My Notes</h3><p style="margin:0">A private space for freeform notes — visible only in this browser.</p></div>
+      <h1>Your labs, meds, and care team in one place.</h1>
+      <p>Share a lab report from Labcorp and it's saved here with the original. Keep track of medications, appointments, doctors, and questions for your next visit. Everything stays on this phone.</p>
     </div>
     <div class="panel">
-      <h3 style="margin-bottom:6px">Recent results</h3>
-      <p style="color:var(--muted);margin-bottom:14px;font-size:0.88rem">Your latest bloodwork and latest imaging/other test result, at a glance.</p>
-      <div id="recent-results-wrap"><div class="empty-state">Nothing yet. Share a lab report from Labcorp to this app, or pick the PDF below.</div></div>
-      <button type="button" class="ghost" data-goto="tracker" style="margin-top:14px">View full history</button>
+      <div class="sec-head"><h3>Today</h3><button type="button" class="add-btn" id="ice-open" style="background:var(--warn-soft);color:var(--warn)">🚨 Emergency info</button></div>
+      <div class="quick-row">
+        <button type="button" class="ghost" data-add="symptoms">🙂 How I feel today</button>
+        <button type="button" class="ghost" data-add="vitals">❤️ Log vitals</button>
+      </div>
     </div>
-    <div class="panel" id="labpdf-panel">
-      <h3 style="margin-bottom:6px">Add a lab report</h3>
-      <p style="color:var(--muted);margin-bottom:14px;font-size:0.88rem">Got results from Labcorp, Quest, or your doctor as a PDF? Save it to your phone, then pick it here. The app reads your blood counts (WBC, ANC, platelets, hemoglobin) and fills them in for you to check before saving.</p>
-      <label for="labpdf-input" class="primary" role="button" tabindex="0" style="display:inline-block;cursor:pointer;margin:0">Choose lab report PDF</label>
-      <input type="file" id="labpdf-input" accept="application/pdf,.pdf" style="position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;pointer-events:none">
-      <div id="labpdf-status" style="margin-top:10px;font-size:0.88rem;color:var(--muted)"></div>
-      <details style="margin-top:12px;font-size:0.9rem">
-        <summary style="cursor:pointer;color:var(--accent);font-weight:600">How do I save the PDF to my phone?</summary>
-        <div style="margin-top:10px;line-height:1.55">
-          <p style="margin:0 0 6px;font-weight:600">If it came in an email (Gmail)</p>
-          <ol style="margin:0 0 12px;padding-left:20px">
-            <li>Open the email and scroll down to the PDF attachment at the bottom.</li>
-            <li>Tap the <strong>download arrow</strong> on the attachment (not the attachment itself). It saves to your Downloads folder.</li>
-            <li>Come back here, tap <strong>Choose lab report PDF</strong>, tap <strong>Files</strong>, and pick it from <strong>Downloads</strong>.</li>
-          </ol>
-          <p style="margin:0 0 6px;font-weight:600">If it's in the Labcorp app</p>
-          <ol style="margin:0 0 12px;padding-left:20px">
-            <li>Open the result and tap the <strong>download</strong> or <strong>share</strong> icon.</li>
-            <li>If you see <strong>Download</strong>, tap it and it saves to Downloads. If you only see a share list, choose <strong>Save to Files</strong> (or <strong>Files by Google</strong>) and pick <strong>Downloads</strong>.</li>
-            <li>Come back here and pick the file the same way.</li>
-          </ol>
-          <p style="margin:0;color:var(--muted)">No PDF, just text in the email? Copy the text and paste it in <strong>Add from email</strong> below.</p>
-        </div>
-      </details>
+    <div class="panel" id="cal-panel">
+      <div class="cal-head">
+        <button type="button" class="ghost cal-nav" data-cal="-1" aria-label="Previous month">‹</button>
+        <h3 id="cal-title" style="margin:0"></h3>
+        <button type="button" class="ghost cal-nav" data-cal="1" aria-label="Next month">›</button>
+      </div>
+      <div class="cal-legend"><span><i class="dot appt"></i>Appointment</span><span><i class="dot lab"></i>Lab / test</span><span><i class="dot refill"></i>Refill due</span><span><i class="dot vax"></i>Vaccine due</span></div>
+      <div class="cal-grid" id="cal-grid"></div>
+      <div id="cal-day" class="cal-day"></div>
+      <button type="button" class="ghost" id="cal-add-appt" style="margin-top:10px">+ Add appointment</button>
     </div>
-    <div class="panel">
-      <h3 style="margin-bottom:6px">Add from email</h3>
+    <div class="panel" style="padding-top:14px;padding-bottom:14px">
+      <div id="recent-results-wrap"></div>
+    </div>
+    <details class="panel fold">
+      <summary>Add from email (paste the text)</summary>
       <p style="color:var(--muted);margin-bottom:14px;font-size:0.88rem">If something only ever reaches you by email — a result, a doctor's after-visit note, a report — paste the text here instead of retyping it. It's filed with today's date into the right place automatically.</p>
       <form id="email-result-form">
         <label>What kind of entry is this</label>
@@ -357,39 +421,10 @@
         <textarea id="er-content" placeholder="Paste the result text from the email" style="min-height:110px" required></textarea>
         <button type="submit" class="primary">Save</button>
       </form>
-    </div>
-    <div class="panel" id="mychart-import-panel">
-      <h3 style="margin-bottom:6px">Import from MyChart</h3>
-      <p style="color:var(--muted);margin-bottom:14px;font-size:0.88rem">In MyChart, download your health summary (it saves as a .zip file), then pick that file here. Your allergies, conditions, medications, lab results, doctors, visits and insurance are read on this phone and added to the app. Your records stay on this device.</p>
-      <label for="mychart-file-input" class="primary" id="mychart-pick-btn" role="button" tabindex="0" style="display:inline-block;cursor:pointer;margin:0">Choose MyChart file</label>
-      <input type="file" id="mychart-file-input" accept=".zip,.xml,application/zip,application/x-zip-compressed,text/xml,application/xml,*/*" style="position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;pointer-events:none">
-      <p style="margin-top:10px;font-size:0.8rem;color:var(--muted)">If tapping the button does nothing, open this app in Chrome instead of inside the Claude app.</p>
-      <div id="mychart-status" style="margin-top:10px;font-size:0.88rem;color:var(--muted)"></div>
-      <div id="mychart-preview" style="display:none;margin-top:12px">
-        <p style="margin-bottom:8px;font-size:0.9rem">Here's what was found. Uncheck anything you don't want, then add it.</p>
-        <div id="mychart-preview-list"></div>
-        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px">
-          <button type="button" class="primary" id="mychart-add-btn">Add to Leukemia Companion</button>
-          <button type="button" class="ghost" id="mychart-cancel-btn">Cancel</button>
-        </div>
-      </div>
-    </div>
-    <div class="panel">
-      <h3 style="margin-bottom:6px">Today</h3>
-      <div id="due-today-wrap"><div class="empty-state">No medications tracked yet.</div></div>
-    </div>
-    <div class="panel">
-      <h3 style="margin-bottom:6px">Quick Links</h3>
-      <p style="color:var(--muted);margin-bottom:14px">One place for every website you need — doctor portals, lab result sites (like MyChart, Quest, or LabCorp), pharmacy sites, insurance sites, anything. Add a website, a phone number, or both. Tap a website to open it, or the 📞 number to call.</p>
-      <form id="link-form" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px">
-        <input type="text" id="link-name" placeholder="Name (e.g. MyChart, Quest Labs)" style="flex:1;min-width:160px;margin:0">
-        <input type="text" id="link-url" placeholder="Website address (optional)" style="flex:1;min-width:160px;margin:0">
-        <input type="tel" id="link-phone" placeholder="Phone number (optional)" inputmode="tel" style="flex:1;min-width:160px;margin:0">
-        <button type="submit" class="primary" style="white-space:nowrap">Add link</button>
-      </form>
-      <div id="link-list-wrap"><div class="empty-state">No links added yet.</div></div>
-    </div>
-    <div class="panel">
+    </details>
+    <details class="panel fold settings-fold">
+      <summary>⚙️ Settings: backup &amp; PIN lock</summary>
+    <div class="panel" style="margin-top:12px">
       <h3 style="margin-bottom:6px">Data &amp; backup</h3>
       <p style="color:var(--muted);margin-bottom:14px">Everything you enter is stored only in this browser. Download a backup periodically, or if you're moving to a new device — you can restore it here or in a fresh copy of this app.</p>
       <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
@@ -399,7 +434,7 @@
       </div>
       <div id="backup-status" style="margin-top:10px;font-size:0.85rem;color:var(--muted)"></div>
     </div>
-    <div class="panel">
+    <div class="panel" style="margin-top:12px">
       <h3 style="margin-bottom:6px">PIN lock</h3>
       <p style="color:var(--muted);margin-bottom:14px">Adds a PIN screen before this app opens on this device. This is a privacy screen, not encryption — the underlying data in this browser isn't scrambled, so it mainly stops casual glances, not someone with real access to the device.</p>
       <div id="pin-status-line" style="font-size:0.88rem;margin-bottom:12px;color:var(--muted)">No PIN set.</div>
@@ -409,6 +444,7 @@
         <button type="button" class="ghost" id="pin-lock-now-btn" style="display:none">Lock now</button>
       </div>
     </div>
+    </details>
   </div>
 
   <!-- TRACKER -->
@@ -426,44 +462,78 @@
       <div class="rec-list" id="list-conditions"></div>
     </div>
     <div class="panel">
+      <div class="sec-head"><h3>Vaccines</h3><button type="button" class="add-btn" data-add="vaccines">+ Add</button></div>
+      <p class="sec-desc">Flu, COVID, shingles, pneumonia and others. Add a "next due" date and it shows on the Home calendar.</p>
+      <div class="rec-list" id="list-vaccines"></div>
+    </div>
+    <div class="panel" id="labpdf-panel">
+      <div class="sec-head"><h3>Log history / Lab work</h3><label for="labpdf-input" class="add-btn" role="button" tabindex="0" style="cursor:pointer">+ Add lab report (PDF)</label></div>
+      <p class="sec-desc">Your lab reports and other test results (scans, biopsies, and more). Your latest is shown; tap Look up past results to see older ones. In the Labcorp app you can also tap Share and pick this app.</p>
+      <div class="rec-list" id="list-logs"></div>
+      <input type="file" id="labpdf-input" accept="application/pdf,.pdf" style="position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;pointer-events:none">
+      <div id="labpdf-status" style="margin-top:10px;font-size:0.88rem;color:var(--muted)"></div>
+      <details style="margin-top:12px;font-size:0.9rem">
+        <summary style="cursor:pointer;color:var(--accent);font-weight:600">How do I save the PDF to my phone?</summary>
+        <div style="margin-top:10px;line-height:1.55">
+          <p style="margin:0 0 6px;font-weight:600">If it came in an email (Gmail)</p>
+          <ol style="margin:0 0 12px;padding-left:20px">
+            <li>Open the email and scroll down to the PDF attachment at the bottom.</li>
+            <li>Tap the <strong>download arrow</strong> on the attachment (not the attachment itself). It saves to your Downloads folder.</li>
+            <li>Come back to Lab work, tap <strong>+ Add lab report (PDF)</strong>, tap <strong>Files</strong>, and pick it from <strong>Downloads</strong>.</li>
+          </ol>
+          <p style="margin:0 0 6px;font-weight:600">If it's in the Labcorp app</p>
+          <ol style="margin:0 0 12px;padding-left:20px">
+            <li>Open the result and tap the <strong>download</strong> or <strong>share</strong> icon.</li>
+            <li>If you see <strong>Download</strong>, tap it and it saves to Downloads. If you only see a share list, choose <strong>Save to Files</strong> (or <strong>Files by Google</strong>) and pick <strong>Downloads</strong>.</li>
+            <li>Come back to Lab work and pick the file the same way.</li>
+          </ol>
+          <p style="margin:0;color:var(--muted)">No PDF, just text in the email? Copy the text and paste it in <strong>Add from email</strong> on Home.</p>
+        </div>
+      </details>
+    </div>
+    <div class="panel" id="mychart-import-panel">
+      <h3 style="margin-bottom:6px">Import from MyChart</h3>
+      <p style="color:var(--muted);margin-bottom:14px;font-size:0.88rem">In MyChart, download your health summary (it saves as a .zip file), then pick that file here. Your allergies, conditions, medications, lab results, doctors, visits and insurance are read on this phone and added to the app. Your records stay on this device.</p>
+      <label for="mychart-file-input" class="primary" id="mychart-pick-btn" role="button" tabindex="0" style="display:inline-block;cursor:pointer;margin:0">Choose MyChart file</label>
+      <input type="file" id="mychart-file-input" accept=".zip,.xml,application/zip,application/x-zip-compressed,text/xml,application/xml,*/*" style="position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;pointer-events:none">
+      <div id="mychart-status" style="margin-top:10px;font-size:0.88rem;color:var(--muted)"></div>
+      <div id="mychart-preview" style="display:none;margin-top:12px">
+        <p style="margin-bottom:8px;font-size:0.9rem">Here's what was found. Uncheck anything you don't want, then add it.</p>
+        <div id="mychart-preview-list"></div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px">
+          <button type="button" class="primary" id="mychart-add-btn">Add to Leukemia Companion</button>
+          <button type="button" class="ghost" id="mychart-cancel-btn">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DAY TO DAY -->
+  <div class="view" id="view-daily">
+    <h2>Day to Day</h2>
+    <div class="panel">
       <div class="sec-head"><h3>Medications</h3><button type="button" class="add-btn" data-add="medications">+ Add</button></div>
       <p class="sec-desc">Tap Edit on any medication to update the dose, refills, or pharmacy.</p>
+      <h4 style="margin:4px 0 6px">Today's checklist</h4>
+      <div id="due-today-wrap"><div class="empty-state">No medications tracked yet.</div></div>
+      <h4 style="margin:16px 0 6px">All my medications</h4>
       <div class="rec-list" id="list-medications"></div>
     </div>
     <div class="panel">
-      <div class="sec-head"><h3>Log history / Lab work</h3><label for="labpdf-input" class="add-btn" role="button" tabindex="0" style="cursor:pointer">+ Add lab report (PDF)</label></div>
-      <p class="sec-desc">Your blood counts over time: WBC, ANC, platelets and hemoglobin. Values outside the usual adult range are highlighted.</p>
-      <div style="margin-bottom:12px;display:flex;gap:10px;flex-wrap:wrap">
-        <button type="button" class="ghost" id="export-csv-btn">Export CSV</button>
-        <button type="button" class="ghost" id="export-pdf-btn">Export PDF for doctor</button>
-      </div>
-      <div class="rec-list" id="list-logs"></div>
-    </div>
-    <div class="panel">
-      <div class="sec-head"><h3>Test results</h3><button type="button" class="add-btn" data-add="testResults">+ Add</button></div>
-      <p class="sec-desc">Imaging, biopsies, pathology, BCR-ABL and other reports, newest first.</p>
-      <div class="rec-list" id="list-testResults"></div>
-    </div>
-    <div class="panel">
-      <div class="sec-head"><h3>Symptom &amp; fever log</h3><button type="button" class="add-btn" data-add="symptoms">+ Add</button></div>
+      <div class="sec-head"><h3>How I feel &amp; symptoms</h3><button type="button" class="add-btn" data-add="symptoms">+ Add</button></div>
       <p class="sec-desc">Day-to-day check-ins between lab draws. Fever often matters most between visits, especially when counts are low, so readings of 100.4°F or higher are flagged. Follow your own care team's instructions.</p>
       <div class="rec-list" id="list-symptoms"></div>
+    </div>
+    <div class="panel">
+      <div class="sec-head"><h3>Vitals</h3><button type="button" class="add-btn" data-add="vitals">+ Add</button></div>
+      <p class="sec-desc">Blood pressure, pulse, weight, temperature, blood sugar, and oxygen. Fill in only what you measured. Once there are two or more readings, a chart shows up here.</p>
+      <div id="vitals-chart-wrap"></div>
+      <div class="rec-list" id="list-vitals"></div>
     </div>
     <div class="panel">
       <div class="sec-head"><h3>Appointments</h3><button type="button" class="add-btn" data-add="appointments">+ Add</button></div>
       <p class="sec-desc">Upcoming and past appointments.</p>
       <div class="rec-list" id="list-appointments"></div>
-    </div>
-    <div class="panel">
-      <div class="sec-head"><h3>Insurance</h3><button type="button" class="add-btn" data-add="insurance">+ Add</button></div>
-      <p class="sec-desc">Your plans, member IDs, and phone numbers.</p>
-      <p style="font-size:0.88rem;margin-bottom:12px">Quick links: <a href="https://www.medicare.gov" target="_blank" rel="noopener">Medicare</a> (<a href="tel:8006334227">800-633-4227</a>) &nbsp;·&nbsp; <a href="https://www.dhcs.ca.gov/services/medi-cal" target="_blank" rel="noopener">Medi-Cal</a> (<a href="tel:8005415555">800-541-5555</a>)</p>
-      <div class="rec-list" id="list-insurance"></div>
-    </div>
-    <div class="panel">
-      <div class="sec-head"><h3>Pharmacies</h3><button type="button" class="add-btn" data-add="pharmacies">+ Add</button></div>
-      <p class="sec-desc">Retail, specialty (often needed for oral chemo and TKIs), mail-order, and hospital pharmacies.</p>
-      <div class="rec-list" id="list-pharmacies"></div>
     </div>
   </div>
 
@@ -474,6 +544,11 @@
     <div class="panel">
       <div class="sec-head"><h3>Doctors &amp; providers</h3><button type="button" class="add-btn" data-add="doctors">+ Add</button></div>
       <div class="rec-list" id="list-doctors"></div>
+    </div>
+    <div class="panel">
+      <h3 style="margin-bottom:6px">Doctor visit summary</h3>
+      <p class="sec-desc">One clean page to bring to an appointment: your conditions, allergies, current medications, latest labs, vitals, how you've been feeling, and your questions. Print it, or choose "Save as PDF" to send it.</p>
+      <button type="button" class="primary" id="visit-summary-btn" style="margin:0">🖨️ Make visit summary</button>
     </div>
     <div class="panel">
       <div class="sec-head"><h3>Visit history</h3><button type="button" class="add-btn" data-add="visits">+ Add</button></div>
@@ -538,8 +613,8 @@
   <div class="view" id="view-directory">
     <h2>Directory</h2>
     <div class="panel">
-      <div class="sec-head"><h3>Every number in one place</h3><button type="button" class="add-btn" data-add="places">+ Add a place</button></div>
-      <p class="sec-desc" style="margin-bottom:0">Doctors, labs, hospitals, clinics, pharmacies, insurance, case managers, organizations, and support contacts. Tap a number to call it or a website to open it. Use Add a place for labs, hospitals, urgent care, and anywhere else.</p>
+      <div class="sec-head" style="flex-direction:column;align-items:flex-start;gap:10px"><h3>Every number in one place</h3><div style="display:flex;gap:8px;flex-wrap:wrap"><button type="button" class="add-btn" data-add="quickLinks">+ Add a link</button><button type="button" class="add-btn" data-add="places">+ Add a place</button><button type="button" class="add-btn" data-add="pharmacies">+ Add a pharmacy</button><button type="button" class="add-btn" data-add="insurance">+ Add insurance</button></div></div>
+      <p class="sec-desc" style="margin-bottom:0">Doctors, labs, hospitals, clinics, pharmacies, insurance, case managers, organizations, and support contacts. Tap a number to call it or a website to open it. Use Add a link for websites and phone numbers like patient portals, MyChart, or Labcorp. Use Add a place for labs, hospitals, urgent care, and anywhere else.</p>
     </div>
     <div class="panel" id="directory-wrap"></div>
   </div>
@@ -691,8 +766,29 @@
     </form>
   </div>
 </div>
+<div id="ice-overlay" class="modal-overlay" hidden>
+  <div class="modal ice-modal" role="dialog" aria-modal="true" aria-labelledby="ice-title" tabindex="-1">
+    <div id="ice-body"></div>
+    <div class="modal-actions">
+      <button type="button" class="primary" id="ice-edit" style="margin:0">Edit my info</button>
+      <button type="button" class="ghost" id="ice-print">Print</button>
+      <button type="button" class="ghost" id="ice-close">Close</button>
+    </div>
+  </div>
+</div>
+<datalist id="vaccine-names"><option value="Flu"><option value="COVID-19"><option value="Shingles (Shingrix)"><option value="Pneumonia (pneumococcal)"><option value="Tdap / tetanus"><option value="RSV"><option value="Hepatitis B"><option value="Hepatitis A"><option value="MMR"></datalist>
+<div id="search-overlay" class="search-overlay" hidden>
+  <div class="search-box" role="dialog" aria-modal="true" aria-label="Search">
+    <div class="search-head">
+      <input type="search" id="search-input" placeholder="Search meds, labs, doctors, notes…" autocomplete="off" enterkeyhint="search" aria-label="Search">
+      <button type="button" class="ghost" id="search-close">Close</button>
+    </div>
+    <div id="search-results" class="search-results" aria-live="polite"></div>
+  </div>
+</div>
 <datalist id="doctor-names"></datalist>
 <datalist id="pharmacy-names"></datalist>
+<datalist id="known-apps"></datalist>
 <script>
 (function () {
   const RANGES = {
@@ -928,7 +1024,7 @@
   }
 
   // ---------- nav ----------
-  const views = ['home', 'tracker', 'careteam', 'support', 'directory', 'education', 'community'];
+  const views = ['home', 'tracker', 'daily', 'careteam', 'support', 'directory', 'education', 'community'];
   function showView(name) {
     views.forEach(v => document.getElementById('view-' + v).classList.toggle('active', v === name));
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.view === name));
@@ -1036,25 +1132,18 @@
 
   const FEVER_THRESHOLD_F = 100.4;
   function renderRecentResults() {
+    // One slim line: the latest lab report and a button to open the original.
     const wrap = document.getElementById('recent-results-wrap');
     if (!wrap) return;
-    const lastLog = [...store.logs].sort((a, b) => (a.date > b.date ? -1 : 1))[0];
-    const lastTest = [...store.testResults].sort((a, b) => (a.date > b.date ? -1 : 1))[0];
-    if (!lastLog && !lastTest) { wrap.innerHTML = '<div class="empty-state">Nothing yet. Share a lab report from Labcorp to this app, or pick the PDF below.</div>'; return; }
-    let html = '';
-    if (lastLog) {
-      const cell = (field, label, unit) => {
-        const v = lastLog[field];
-        if (v === null || v === undefined || v === '') return '';
-        const cls = inRange(field, v) ? '' : ' class="out-of-range"';
-        return `<span${cls} style="margin-right:14px">${label} ${v}${unit}</span>`;
-      };
-      html += `<div class="dir-item"><div class="dir-info"><div class="dir-name">Latest bloodwork — ${lastLog.date}</div><div class="dir-sub" style="margin-top:6px">${cell('wbc', 'WBC', '')}${cell('anc', 'ANC', '')}${cell('platelets', 'Plt', '')}${cell('hemoglobin', 'Hgb', '')}${!lastLog.wbc && !lastLog.anc && !lastLog.platelets && !lastLog.hemoglobin ? 'No values recorded' : ''}</div></div></div>`;
-    }
-    if (lastTest) {
-      html += `<div class="dir-item"><div class="dir-info"><div class="dir-name">Latest other result — ${lastTest.date}${lastTest.type ? ' · ' + escapeHtml(lastTest.type) : ''}</div><div class="dir-sub" style="margin-top:6px">${escapeHtml(lastTest.result || lastTest.description || 'No summary recorded')}${lastTest.followup ? ' · ⚠️ Follow-up needed' : ''}</div></div></div>`;
-    }
-    wrap.innerHTML = html;
+    const last = [...(store.testResults || [])].sort((a, b) => (a.date > b.date ? -1 : 1))[0];
+    if (!last) { wrap.innerHTML = '<div style="color:var(--muted);font-size:0.9rem">No lab reports yet. Share one from Labcorp to this app, or tap + Add lab report (PDF) under My Health → Lab work.</div>'; return; }
+    const rows = Array.isArray(last.rows) ? last.rows : [];
+    const flagged = rows.filter(r => r.flag).length;
+    wrap.innerHTML = `<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
+      <div><div style="font-weight:600">Latest: ${escapeHtml((last.description || last.type || 'Test result').replace(/ – .*$/, ''))}</div>
+      <div style="color:var(--muted);font-size:0.88rem">${escapeHtml(fmtDate(last.date))}${flagged ? ` · <span class="out-of-range">${flagged} out of range</span>` : ''}</div></div>
+      ${last.pdfId ? `<button type="button" class="ghost view-pdf" data-pdf="${escapeHtml(last.pdfId)}" style="margin:0">📄 View original</button>` : `<button type="button" class="ghost" data-goto="tracker" style="margin:0">View</button>`}
+    </div>`;
   }
   function gcalUrl(med) {
     if (!med.reminderTime) return null;
@@ -1072,6 +1161,71 @@
     const details = encodeURIComponent([med.frequency, med.notes].filter(Boolean).join(' — ') || 'Medication reminder from Leukemia Companion');
     return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${text}&dates=${fmt(dt)}/${fmt(endDt)}&details=${details}${recur}`;
   }
+  const IS_ANDROID = /Android/i.test(navigator.userAgent);
+  // Android: open the phone's Calendar app on a full-size "new event" screen (falls back to the Google Calendar web page).
+  function calIntent({ title, begin, end, allDay, rrule, location, description, fallback }) {
+    const e = encodeURIComponent;
+    let u = 'intent:#Intent;action=android.intent.action.INSERT;type=vnd.android.cursor.item/event;';
+    u += 'S.title=' + e(title) + ';l.beginTime=' + begin + ';l.endTime=' + end + ';';
+    if (allDay) u += 'B.allDay=true;';
+    if (rrule) u += 'S.rrule=' + e(rrule) + ';';
+    if (location) u += 'S.eventLocation=' + e(location) + ';';
+    if (description) u += 'S.description=' + e(description) + ';';
+    if (fallback && fallback !== '#') u += 'S.browser_fallback_url=' + e(fallback) + ';';
+    return u + 'end';
+  }
+  function medCalLink(med) {
+    const web = gcalUrl(med);
+    if (!web) return null;
+    if (!IS_ANDROID) return web;
+    const st = new Date(`${med.start || todayIso()}T${med.reminderTime}:00`);
+    if (isNaN(st.getTime())) return web;
+    let rrule = '';
+    if (med.repeat === 'DAILY' || med.repeat === 'WEEKLY') {
+      rrule = 'FREQ=' + med.repeat;
+      if (med.end) rrule += ';UNTIL=' + med.end.replace(/-/g, '') + 'T235959Z';
+    }
+    return calIntent({ title: `Take ${med.name}${med.dose ? ' (' + med.dose + ')' : ''}`, begin: st.getTime(), end: st.getTime() + 15 * 60000,
+      rrule, description: [med.frequency, med.notes].filter(Boolean).join(' — ') || 'Medication reminder from Leukemia Companion', fallback: web });
+  }
+  function apptCalLink(a) {
+    const web = apptCalUrl(a);
+    if (!IS_ANDROID) return web;
+    const title = 'Appointment' + (a.provider ? ' – ' + a.provider : '');
+    const description = [a.notes, 'From Leukemia Companion'].filter(Boolean).join('\n');
+    if (a.time) {
+      const st = new Date(`${a.date}T${a.time}:00`);
+      if (isNaN(st.getTime())) return web;
+      return calIntent({ title, begin: st.getTime(), end: st.getTime() + 3600000, location: a.location, description, fallback: web });
+    }
+    const d0 = Date.parse(a.date + 'T00:00:00Z');
+    if (isNaN(d0)) return web;
+    return calIntent({ title, begin: d0, end: d0 + 86400000, allDay: true, location: a.location, description, fallback: web });
+  }
+  function fmtTime(t) {
+    const m = String(t || '').match(/^(\d{1,2}):(\d{2})/);
+    if (!m) return t || '';
+    let h = +m[1]; const ap = h >= 12 ? 'PM' : 'AM'; h = h % 12 || 12;
+    return `${h}:${m[2]} ${ap}`;
+  }
+  function apptCalUrl(a) {
+    const text = encodeURIComponent('Appointment' + (a.provider ? ' – ' + a.provider : ''));
+    const details = encodeURIComponent([a.notes, 'From Leukemia Companion'].filter(Boolean).join('\n'));
+    const loc = a.location ? '&location=' + encodeURIComponent(a.location) : '';
+    let dates;
+    if (a.time) {
+      const st = new Date(`${a.date}T${a.time}:00`);
+      if (isNaN(st.getTime())) return '#';
+      const en = new Date(st.getTime() + 60 * 60000);
+      const f = d => d.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+      dates = `${f(st)}/${f(en)}`;
+    } else {
+      const d0 = new Date(a.date + 'T12:00:00'); const d1 = new Date(d0.getTime() + 86400000);
+      const f = d => d.getFullYear() + String(d.getMonth() + 1).padStart(2, '0') + String(d.getDate()).padStart(2, '0');
+      dates = `${f(d0)}/${f(d1)}`;
+    }
+    return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${text}&dates=${dates}&details=${details}${loc}`;
+  }
   function telHref(phone) {
     const digits = String(phone).replace(/[^\d+]/g, '');
     return digits ? `tel:${digits}` : null;
@@ -1079,6 +1233,58 @@
   function webHref(site) {
     if (!site) return null;
     return /^https?:\/\//.test(site) ? site : 'https://' + site;
+  }
+  // Apps a Quick Link can open directly. IDs are Play Store app IDs; "also" = other names people type.
+  const KNOWN_APPS = [
+    { id: 'com.CallTheCar.app', name: 'Call the Car', also: ['ctc go', 'ctcgo', 'callthecar'] },
+    { id: 'epic.mychart.android', name: 'MyChart', also: ['my chart'] },
+    { id: 'com.labcorp.patientportal', name: 'Labcorp Patient', also: ['labcorp', 'lab corp'] },
+    { id: 'org.kp.m', name: 'Kaiser Permanente', also: ['kaiser', 'kp'] },
+    { id: 'com.cvs.launchers.cvs', name: 'CVS Pharmacy', also: ['cvs'] },
+    { id: 'com.usablenet.mobile.walgreen', name: 'Walgreens', also: [] },
+    { id: 'com.goodrx', name: 'GoodRx', also: ['good rx'] },
+    { id: 'com.cigna.mycigna', name: 'myCigna', also: ['cigna'] },
+    { id: 'com.ecw.healow', name: 'healow', also: [] },
+    { id: 'com.jardogs.fmhmobile', name: 'FollowMyHealth', also: ['follow my health'] },
+    { id: 'us.zoom.videomeetings', name: 'Zoom', also: [] },
+    { id: 'me.lyft.android', name: 'Lyft', also: [] },
+    { id: 'com.ubercab', name: 'Uber', also: [] },
+    { id: 'com.google.android.apps.maps', name: 'Google Maps', also: ['maps'] },
+    { id: 'com.google.android.calendar', name: 'Google Calendar', also: ['calendar'] },
+    { id: 'com.google.android.gm', name: 'Gmail', also: [] },
+  ];
+  const APP_ID_RE = /^[A-Za-z][\w]*(\.[A-Za-z_][\w]*)+$/;
+  const squash = t => String(t || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+  // Turns whatever was typed (an app name, a Play Store link, or an app ID) into { id, name }.
+  function resolveApp(text) {
+    const t = String(text || '').trim();
+    if (!t) return null;
+    const m = t.match(/[?&]id=([A-Za-z][\w.]*)/);
+    if (m && APP_ID_RE.test(m[1])) return { id: m[1], name: (KNOWN_APPS.find(a => a.id === m[1]) || {}).name || '' };
+    if (APP_ID_RE.test(t) && !/\s/.test(t) && /[a-z]\.[a-z]/i.test(t) && !/\.(com|org|net|gov)$/i.test(t)) return { id: t, name: '' };
+    const q = squash(t);
+    if (q.length < 2) return { id: '', name: t };
+    const hit = KNOWN_APPS.find(a => [a.name, ...a.also].some(n => squash(n) === q))
+      || (q.length >= 4 ? KNOWN_APPS.find(a => [a.name, ...a.also].some(n => { const k = squash(n); return k.length >= 4 && (q.includes(k) || k.includes(q)); })) : null);
+    return hit ? { id: hit.id, name: hit.name } : { id: '', name: t };
+  }
+  // Known app: open it (Play Store page if it isn't installed). Unknown app: jump to it in the Play Store, which has an Open button.
+  function appHref(appId, appName) {
+    const e = encodeURIComponent;
+    if (!IS_ANDROID) {
+      // Not an Android phone: show the app's Play Store page instead.
+      if (appId && APP_ID_RE.test(appId)) return 'https://play.google.com/store/apps/details?id=' + appId;
+      return appName ? 'https://play.google.com/store/search?c=apps&q=' + e(appName) : null;
+    }
+    if (appId && APP_ID_RE.test(appId)) {
+      const store = 'https://play.google.com/store/apps/details?id=' + appId;
+      return `intent://#Intent;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;package=${appId};S.browser_fallback_url=${e(store)};end`;
+    }
+    if (appName) {
+      const web = 'https://play.google.com/store/search?c=apps&q=' + e(appName);
+      return `intent://search?c=apps&q=${e(appName)}#Intent;scheme=market;package=com.android.vending;S.browser_fallback_url=${e(web)};end`;
+    }
+    return null;
   }
   function dirItem(name, sub, phone, website, email) {
     const actions = [];
@@ -1089,17 +1295,39 @@
     if (email) actions.push(`<a href="mailto:${escapeHtml(email)}">✉️ Email</a>`);
     return `<div class="dir-item"><div class="dir-info"><div class="dir-name">${escapeHtml(name)}</div>${sub ? `<div class="dir-sub">${escapeHtml(sub)}</div>` : ''}</div><div class="dir-actions">${actions.join('') || '<span class="dir-sub">No contact info</span>'}</div></div>`;
   }
+  function localIso(d) { d = d || new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; }
   function renderDueToday() {
     const wrap = document.getElementById('due-today-wrap');
     if (!wrap) return;
-    const today = new Date().toISOString().slice(0, 10);
-    const active = store.medications.filter(m => (!m.start || m.start <= today) && (!m.end || m.end >= today));
-    if (!active.length) { wrap.innerHTML = '<div class="empty-state">No active medications today.</div>'; return; }
+    const today = localIso();
+    const active = (store.medications || []).filter(m => (!m.start || m.start <= today) && (!m.end || m.end >= today));
+    if (!active.length) { wrap.innerHTML = '<div class="empty-state" style="padding:10px 0">No active medications today. Tap + Add above to add one.</div>'; return; }
+    if (!store.doseLog || typeof store.doseLog !== 'object') store.doseLog = {};
+    const taken = store.doseLog[today] || {};
     const sorted = [...active].sort((a, b) => (a.reminderTime || '99:99').localeCompare(b.reminderTime || '99:99'));
-    wrap.innerHTML = '<ul style="margin:0;padding-left:18px">' + sorted.map(m =>
-      `<li style="margin-bottom:6px"><strong>${escapeHtml(m.name)}</strong>${m.dose ? ' — ' + escapeHtml(m.dose) : ''}${m.reminderTime ? ` <span style="color:var(--muted)">(${m.reminderTime})</span>` : ''}${m.frequency ? `<br><span style="color:var(--muted);font-size:0.85rem">${escapeHtml(m.frequency)}</span>` : ''}</li>`
-    ).join('') + '</ul>';
+    const done = sorted.filter(m => taken[m.id]).length;
+    const t12 = t => { if (!t) return ''; const [h, mi] = t.split(':').map(Number); return `${((h + 11) % 12) + 1}:${String(mi).padStart(2, '0')} ${h < 12 ? 'AM' : 'PM'}`; };
+    wrap.innerHTML = `<div class="dose-summary">${done === sorted.length ? '✅ All medications checked off for today.' : `Tap each one when you take it. ${done} of ${sorted.length} done today.`}</div>` + sorted.map(m =>
+      `<label class="dose-row${taken[m.id] ? ' done' : ''}"><input type="checkbox" class="dose-check" data-med="${m.id}"${taken[m.id] ? ' checked' : ''}>
+        <span class="dose-info"><span class="dose-name"><strong>${escapeHtml(m.name)}</strong>${m.dose ? ' — ' + escapeHtml(m.dose) : ''}</span>${m.reminderTime ? ` <span style="color:var(--muted)">(${t12(m.reminderTime)})</span>` : ''}${m.frequency ? `<br><span style="color:var(--muted);font-size:0.85rem">${escapeHtml(m.frequency)}</span>` : ''}</span>
+        ${taken[m.id] ? `<span class="dose-taken">Taken ${t12(taken[m.id])}</span>` : ''}</label>`
+    ).join('');
   }
+  document.addEventListener('change', e => {
+    const cb = e.target.closest && e.target.closest('.dose-check');
+    if (!cb) return;
+    const today = localIso();
+    if (!store.doseLog || typeof store.doseLog !== 'object') store.doseLog = {};
+    const day = store.doseLog[today] = store.doseLog[today] || {};
+    const now = new Date();
+    if (cb.checked) day[cb.dataset.med] = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+    else delete day[cb.dataset.med];
+    // keep about four months of check-offs
+    const cutoff = localIso(new Date(Date.now() - 120 * 86400000));
+    Object.keys(store.doseLog).forEach(k => { if (k < cutoff) delete store.doseLog[k]; });
+    saveStore();
+    renderDueToday();
+  });
   const BUILT_IN_LINKS = [
     { name: 'Medicare', url: 'https://www.medicare.gov', phone: '800-633-4227' },
     { name: 'Medi-Cal', url: 'https://www.dhcs.ca.gov/services/medi-cal', phone: '800-541-5555' },
@@ -1110,6 +1338,7 @@
   }
   function renderQuickLinks() {
     const wrap = document.getElementById('link-list-wrap');
+    if (!wrap) return;
     store.quickLinks.forEach(l => { if (l.url && !l.phone && /^[\d\s().+-]{7,}$/.test(l.url) && l.url.replace(/\D/g, '').length >= 7) { l.phone = l.url; l.url = ''; } });
     const all = [...BUILT_IN_LINKS.map(l => ({ ...l, builtIn: true })), ...store.quickLinks];
     if (!all.length) { wrap.innerHTML = '<div class="empty-state">No links added yet.</div>'; return; }
@@ -1126,7 +1355,7 @@
       renderQuickLinks();
     }));
   }
-  document.getElementById('link-form').addEventListener('submit', e => {
+  document.getElementById('link-form')?.addEventListener('submit', e => {
     e.preventDefault();
     const nameInput = document.getElementById('link-name');
     const urlInput = document.getElementById('link-url');
@@ -1210,6 +1439,7 @@
     const downloads = await getDownloads();
     const csvBtn = document.getElementById('export-csv-btn');
     const pdfBtn = document.getElementById('export-pdf-btn');
+    if (!csvBtn || !pdfBtn) return; // exports removed from Lab work
     if (!downloads) { csvBtn.style.display = 'none'; pdfBtn.style.display = 'none'; return; }
 
     function sortedLogs() { return [...store.logs].sort((a, b) => (a.date < b.date ? -1 : 1)); }
@@ -1419,18 +1649,18 @@
         try {
           const parsed = JSON.parse(reader.result);
           const incoming = parsed.data || parsed; // tolerate a raw store object too
-          const hasAny = incoming && (incoming.logs || incoming.doctors || incoming.visits || incoming.insurance || incoming.symptoms || incoming.medications || incoming.appointments || incoming.posts || incoming.pharmacies || incoming.myQuestions || incoming.quickLinks || incoming.supportContacts || incoming.testResults || incoming.places || incoming.orgs || incoming.allergies || incoming.conditions);
+          const hasAny = incoming && (incoming.logs || incoming.doctors || incoming.visits || incoming.insurance || incoming.symptoms || incoming.medications || incoming.appointments || incoming.posts || incoming.pharmacies || incoming.myQuestions || incoming.quickLinks || incoming.supportContacts || incoming.testResults || incoming.places || incoming.orgs || incoming.allergies || incoming.conditions || incoming.vitals || incoming.vaccines || incoming.aboutMe);
           if (!hasAny) { status.textContent = "That file doesn't look like a Leukemia Companion backup."; return; }
           const ok = confirm('Restoring will replace all current data in this browser with the backup. Continue?');
           if (!ok) { fileInput.value = ''; return; }
-          store = {
+          store = Object.assign({ vitals: incoming.vitals || [], vaccines: incoming.vaccines || [], aboutMe: incoming.aboutMe || [], doseLog: incoming.doseLog || {} }, {
             logs: incoming.logs || [], appointments: incoming.appointments || [], posts: incoming.posts || [],
             insurance: incoming.insurance || [], doctors: incoming.doctors || [], visits: incoming.visits || [],
             symptoms: incoming.symptoms || [], medications: incoming.medications || [], caseManagers: incoming.caseManagers || [],
             pharmacies: incoming.pharmacies || [], myQuestions: incoming.myQuestions || [], quickLinks: incoming.quickLinks || [],
             supportContacts: incoming.supportContacts || [], testResults: incoming.testResults || [], places: incoming.places || [], orgs: incoming.orgs || [], allergies: incoming.allergies || [], conditions: incoming.conditions || [],
             nextIds: incoming.nextIds || { allergy: 1, condition: 1, org: 1, place: 1, log: 1, appt: 1, post: 1, comment: 1, insurance: 1, doctor: 1, visit: 1, symptom: 1, medication: 1, caseManager: 1, pharmacy: 1, myq: 1, link: 1, support: 1, testResult: 1 },
-          };
+          });
           saveStore();
           if (parsed.files && typeof parsed.files === 'object') {
             Object.entries(parsed.files).forEach(([k, b64]) => {
@@ -1926,7 +2156,7 @@
 
   // ---------- records: schemas, cards, and the shared add/edit window ----------
   const F = (key, label, type, extra) => Object.assign({ key, label, type: type || 'text' }, extra || {});
-  const todayIso = () => new Date().toISOString().slice(0, 10);
+  const todayIso = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; };
   const fmtDate = d => {
     if (!d || !/^\d{4}-\d{2}-\d{2}$/.test(d)) return d || '';
     const [y, m, day] = d.split('-').map(Number);
@@ -1962,14 +2192,14 @@
       card: m => {
         const ended = m.end && m.end < todayIso();
         const dueSoon = m.refillDue && !ended && m.refillDue <= new Date(Date.now() + 5 * 86400000).toISOString().slice(0, 10);
-        const url = gcalUrl(m);
+        const url = medCalLink(m);
         return {
           title: m.name, dim: ended, tag: ended ? 'Stopped' : '', flag: dueSoon ? 'Refill due ' + fmtDate(m.refillDue) : '',
           sub: [m.dose, m.frequency].filter(Boolean).join(', '),
           lines: [m.doctor ? 'Prescribed by ' + m.doctor : '', m.pharmacy ? 'Filled at ' + m.pharmacy + (m.rxNumber ? ', Rx ' + m.rxNumber : '') : '',
             (m.refillsRemaining ?? '') !== '' && m.refillsRemaining !== null ? m.refillsRemaining + ' refills left' + (m.refillDue && !dueSoon ? ', next due ' + fmtDate(m.refillDue) : '') : (m.refillDue && !dueSoon ? 'Next refill due ' + fmtDate(m.refillDue) : ''),
             m.start || m.end ? [m.start ? 'Started ' + fmtDate(m.start) : '', m.end ? 'Ends ' + fmtDate(m.end) : ''].filter(Boolean).join(', ') : '', m.notes],
-          links: url ? [{ href: url, text: '📅 Reminder' }] : [],
+          links: url ? [{ href: url, text: '📅 Set reminder in Calendar', self: IS_ANDROID }] : [],
         };
       },
     },
@@ -2024,9 +2254,12 @@
     },
     appointments: {
       idKey: 'appt', noun: 'appointment', empty: 'No appointments yet.',
-      fields: [F('date', 'Date', 'date', { required: true }), F('provider', 'With', 'text', { list: 'doctor-names' }), F('notes', 'What it\'s for', 'textarea', { wide: true })],
+      fields: [F('date', 'Date', 'date', { required: true }), F('time', 'Time', 'time'), F('provider', 'With', 'text', { list: 'doctor-names' }),
+        F('location', 'Where', 'text', { wide: true, placeholder: 'e.g. clinic name or address' }), F('notes', 'What it\'s for', 'textarea', { wide: true })],
       sort: (a, b) => { const t = todayIso(); const pa = (a.date || '') < t, pb = (b.date || '') < t; return pa - pb || (pa ? byDateDesc(a, b) : -byDateDesc(a, b)); },
-      card: a => ({ title: fmtDate(a.date), tag: (a.date || '') >= todayIso() ? 'Upcoming' : '', dim: (a.date || '') < todayIso(), sub: a.provider, lines: [a.notes] }),
+      card: a => ({ title: fmtDate(a.date) + (a.time ? ', ' + fmtTime(a.time) : ''), tag: (a.date || '') >= todayIso() ? 'Upcoming' : '', dim: (a.date || '') < todayIso(),
+        sub: [a.provider, a.location].filter(Boolean).join(' · '), lines: [a.notes],
+        links: (a.date || '') >= todayIso() ? [{ href: apptCalLink(a), text: '📅 Add to Calendar', self: IS_ANDROID }].concat(a.location ? [{ href: 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(a.location), text: '📍 Map' }] : []) : [] }),
     },
     insurance: {
       idKey: 'insurance', noun: 'insurance plan', empty: 'No insurance plans added yet.',
@@ -2078,6 +2311,28 @@
         F('phone', 'Phone', 'tel'), F('website', 'Website', 'text', { inputmode: 'url' }), F('helps', 'What they help with', 'text', { wide: true })],
       card: o => ({ title: o.name, sub: [o.type, o.helps].filter(Boolean).join(', '), phone: o.phone, website: o.website }),
     },
+    quickLinks: {
+      idKey: 'link', noun: 'link', empty: '',
+      fields: [F('name', 'Name', 'text', { placeholder: 'e.g. MyChart, Labcorp, Medicare' }), F('url', 'Website', 'text', { wide: true, inputmode: 'url', placeholder: 'optional' }),
+        F('phone', 'Phone', 'tel', { placeholder: 'optional' }),
+        F('appName', 'App on your phone', 'text', { wide: true, list: 'known-apps', placeholder: 'optional, e.g. Call the Car' })],
+      sort: (a, b) => String(a.name || '').localeCompare(String(b.name || '')),
+      beforeSave: v => {
+        if (v.url && !v.phone && /^[\d\s().+-]{7,}$/.test(v.url) && v.url.replace(/\D/g, '').length >= 7) { v.phone = v.url; v.url = ''; }
+        if (!v.appName && !v.url && !v.phone && v.name) v.appName = v.name; // just a name typed: treat it as an app
+        const app = resolveApp(v.appName);
+        v.appId = app ? app.id : '';
+        if (app && (/^https?:/i.test(v.appName) || app.id === v.appName)) v.appName = app.name || app.id;
+        if (!v.name) v.name = app ? (app.name || v.appName) : '';
+        if (!v.name) return 'Add a name for this link.';
+        if (!v.url && !v.phone && !v.appName) return 'Add a website, a phone number, or an app.';
+        return null;
+      },
+      card: l => {
+        let id = l.appId, nm = l.appName;
+        if (!nm && !id) { const r = resolveApp(l.name); if (r && (r.id || (!l.url && !l.phone))) { id = r.id; nm = r.name || l.name; } }
+        const h = appHref(id, nm); return { title: l.name, phone: l.phone, website: l.url, links: h ? [{ href: h, text: '📱 Open app', self: IS_ANDROID }] : [] }; },
+    },
     places: {
       idKey: 'place', noun: 'place', empty: '',
       fields: [F('name', 'Name', 'text', { required: true, placeholder: 'e.g. Green Medical' }), F('kind', 'Kind of place', 'select', { options: ['Lab', 'Hospital', 'Clinic / medical office', 'Urgent care', 'Imaging center', 'Other'] }),
@@ -2101,7 +2356,7 @@
     const web = webHref(c.website);
     if (web) actions.push(`<a href="${escapeHtml(web)}" target="_blank" rel="noopener">🌐 Website</a>`);
     if (c.email) actions.push(`<a href="mailto:${escapeHtml(c.email)}">✉️ Email</a>`);
-    (c.links || []).forEach(l => actions.push(`<a href="${escapeHtml(l.href)}" target="_blank" rel="noopener">${escapeHtml(l.text)}</a>`));
+    (c.links || []).forEach(l => actions.push(`<a href="${escapeHtml(l.href)}"${l.self ? '' : ' target="_blank" rel="noopener"'}>${escapeHtml(l.text)}</a>`));
     const compact = !!(opts && opts.directory);
     let long = '';
     if (c.long && !compact) {
@@ -2119,7 +2374,7 @@
         ${c.html || ''}${long}${lines ? `<div class="rec-lines">${lines}</div>` : ''}
       </div>
       <div class="rec-side">
-        <button type="button" class="rec-edit" data-col="${col}" data-id="${item.id}" aria-label="Edit ${escapeHtml(c.title || SCHEMAS[col].noun)}">Edit</button>
+        <div class="rec-btns"><button type="button" class="rec-edit" data-col="${col}" data-id="${item.id}" aria-label="Edit ${escapeHtml(c.title || SCHEMAS[col].noun)}">Edit</button><button type="button" class="rec-del" data-col="${col}" data-id="${item.id}" aria-label="Delete ${escapeHtml(c.title || SCHEMAS[col].noun)}">Delete</button></div>
         ${actions.length ? `<div class="dir-actions">${actions.join('')}</div>` : ''}
       </div>
     </div>`;
@@ -2149,12 +2404,49 @@
   });
 
   // names the rest of the app already calls
-  function renderLogTable() { renderCollection('logs'); }
+  // Latest item shown; everything older sits behind a "Look up past results" button.
+  const pastOpen = new Set();
+  const isLabReport = t => !!t.pdfId || t.type === 'Lab / bloodwork';
+  function renderLatestWithPast(wrapId, key, groups, emptyMsg) {
+    const wrap = document.getElementById(wrapId);
+    if (!wrap) return;
+    const all = [];
+    groups.forEach(g => g.items.forEach(it => all.push({ col: g.col, it })));
+    all.sort((a, b) => ((a.it.date || '') > (b.it.date || '') ? -1 : 1));
+    if (!all.length) { wrap.innerHTML = `<div class="empty-state">${escapeHtml(emptyMsg)}</div>`; return; }
+    const latest = all[0], past = all.slice(1);
+    let html = recordCard(latest.col, latest.it);
+    if (past.length) {
+      const open = pastOpen.has(key);
+      html += `<button type="button" class="ghost past-toggle" data-past="${key}" style="margin-top:10px">${open ? 'Hide past results' : `🔎 Look up past results (${past.length})`}</button>`;
+      if (open) html += `<div style="margin-top:10px">${past.map(x => recordCard(x.col, x.it)).join('')}</div>`;
+    }
+    wrap.innerHTML = html;
+  }
+  document.addEventListener('click', e => {
+    const b = e.target.closest('.past-toggle');
+    if (!b) return;
+    const k = b.dataset.past;
+    if (pastOpen.has(k)) pastOpen.delete(k); else pastOpen.add(k);
+    k === 'lab' ? renderLogTable() : renderTestResults();
+  });
+  function renderLogTable() {
+    ensureCollection('logs'); ensureCollection('testResults');
+    const reports = store.testResults;
+    const reportDates = new Set(reports.filter(isLabReport).map(r => r.date));
+    // Blood-count entries that already have a full report on the same date are covered by that report.
+    const countsOnly = store.logs.filter(l => !reportDates.has(l.date));
+    renderLatestWithPast('list-logs', 'lab', [{ col: 'testResults', items: reports }, { col: 'logs', items: countsOnly }],
+      'No lab reports or test results yet. Tap "+ Add lab report (PDF)" or share a report from Labcorp to this app.');
+  }
   function renderAppointments() { renderCollection('appointments'); }
   function renderInsurance() { renderCollection('insurance'); }
   function renderDoctors() { renderCollection('doctors'); }
   function renderVisits() { renderCollection('visits'); }
-  function renderTestResults() { renderCollection('testResults'); }
+  function renderTestResults() {
+    ensureCollection('testResults');
+    renderLatestWithPast('list-testResults', 'tests', [{ col: 'testResults', items: store.testResults.filter(t => !isLabReport(t)) }], 'No other test results yet.');
+  }
   function renderSymptoms() { renderCollection('symptoms'); }
   function renderMedications() { renderCollection('medications'); }
   function renderPharmacies() { renderCollection('pharmacies'); }
@@ -2170,6 +2462,18 @@
     const groups = [];
     const add = (label, col, items) => { if (items && items.length) groups.push(`<div class="dir-group"><h4>${escapeHtml(label)}</h4>${items.map(it => recordCard(col, it, { directory: true })).join('')}</div>`); };
     add('Doctors & providers', 'doctors', store.doctors);
+    ensureCollection('quickLinks');
+    if (!store.linksSeeded) {
+      // Medicare / Medi-Cal used to be fixed links; now they're normal entries you can edit or delete.
+      [{ name: 'Medicare', url: 'https://www.medicare.gov', phone: '800-633-4227' }, { name: 'Medi-Cal', url: 'https://www.dhcs.ca.gov/services/medi-cal', phone: '800-541-5555' }]
+        .forEach(b => { if (!store.quickLinks.some(l => l.name === b.name)) store.quickLinks.push(Object.assign({ id: store.nextIds.link++ }, b)); });
+      store.linksSeeded = true; saveStore();
+    }
+    store.quickLinks.forEach(l => { if (l.url && !l.phone && /^[\d\s().+-]{7,}$/.test(l.url) && l.url.replace(/\D/g, '').length >= 7) { l.phone = l.url; l.url = ''; } });
+    store.quickLinks.forEach(l => { if (l.appId && !l.appName) l.appName = (KNOWN_APPS.find(a => a.id === l.appId) || {}).name || l.appId; });
+    const appList = document.getElementById('known-apps');
+    if (appList && !appList.children.length) appList.innerHTML = KNOWN_APPS.map(a => `<option value="${escapeHtml(a.name)}">`).join('');
+    add('Websites & quick links', 'quickLinks', [...store.quickLinks].sort(SCHEMAS.quickLinks.sort));
     KIND_ORDER.forEach(kind => add(KIND_LABEL[kind], 'places', (store.places || []).filter(pl => (KIND_ORDER.includes(pl.kind) ? pl.kind : 'Other') === kind)));
     add('Pharmacies', 'pharmacies', store.pharmacies);
     add('Insurance', 'insurance', store.insurance);
@@ -2208,7 +2512,8 @@
         const extra = [f.list ? `list="${f.list}"` : '', f.step !== undefined ? `step="${f.step}"` : '', f.min !== undefined ? `min="${f.min}"` : '', f.inputmode ? `inputmode="${f.inputmode}"` : '', f.type === 'number' ? 'inputmode="decimal"' : ''].filter(Boolean).join(' ');
         input = `<input type="${f.type}" ${common} ${extra} value="${escapeHtml(val ?? '')}">`;
       }
-      return `<div class="${wide.trim()}"><label for="${id}">${escapeHtml(f.label)}${f.required ? ' *' : ''}</label>${input}</div>`;
+      const showIf = f.showIf ? ` data-show-key="${f.showIf[0]}" data-show-val="${escapeHtml(f.showIf[1])}"` : '';
+      return `<div class="${wide.trim()}"${showIf}><label for="${id}">${escapeHtml(f.label)}${f.required ? ' *' : ''}</label>${input}</div>`;
     }
 
     function open(col, id, prefill) {
@@ -2223,6 +2528,7 @@
       if (!item) sch.fields.forEach(f => { if (f.type === 'date' && f.required) defaults[f.key] = todayIso(); if (f.type === 'select' && f.options && !f.options.includes('')) defaults[f.key] = Array.isArray(f.options[0]) ? f.options[0][0] : f.options[0]; });
       if (!item && prefill) Object.assign(defaults, prefill);
       fieldsWrap.innerHTML = sch.fields.map((f, i) => fieldHtml(f, item ? item[f.key] : defaults[f.key], i)).join('');
+      applyShowIf();
       delBtn.style.display = item ? '' : 'none';
       errEl.textContent = '';
       lastFocus = document.activeElement;
@@ -2232,6 +2538,19 @@
       if (first && !item) setTimeout(() => first.focus(), 30);
       else overlay.querySelector('.modal').focus?.();
     }
+    function applyShowIf() {
+      fieldsWrap.querySelectorAll('[data-show-key]').forEach(box => {
+        const src = fieldsWrap.querySelector(`[name="${box.dataset.showKey}"]`);
+        box.hidden = !src || src.value !== box.dataset.showVal;
+      });
+    }
+    fieldsWrap.addEventListener('change', e => {
+      const key = e.target && e.target.name;
+      if (!key || !current) return;
+      const sch = SCHEMAS[current.col];
+      if (sch.onChange) sch.onChange(key, fieldsWrap);
+      applyShowIf();
+    });
     function close() {
       overlay.hidden = true;
       document.body.classList.remove('modal-open');
@@ -2259,6 +2578,7 @@
         if (f.required && (vals[f.key] === '' || vals[f.key] === null) && !missing) missing = { f, el };
       });
       if (missing) { errEl.textContent = `Please fill in "${missing.f.label}".`; missing.el.focus(); return; }
+      if (sch.beforeSave) { const err = sch.beforeSave(vals); if (err) { errEl.textContent = err; return; } }
       ensureCollection(col);
       if (current.id) {
         const item = store[col].find(x => x.id === current.id);
@@ -2287,6 +2607,20 @@
     document.addEventListener('click', e => {
       const addBtn = e.target.closest('[data-add]');
       if (addBtn && SCHEMAS[addBtn.dataset.add]) { open(addBtn.dataset.add); return; }
+      const del = e.target.closest('.rec-del');
+      if (del) {
+        const col = del.dataset.col, id = +del.dataset.id;
+        const item = (store[col] || []).find(x => x.id === id);
+        if (!item) return;
+        const name = SCHEMAS[col].card(item).title || SCHEMAS[col].noun;
+        if (!confirm(`Delete ${name}? This can't be undone.`)) return;
+        store[col] = store[col].filter(x => x.id !== id);
+        if (item.pdfId) pdfFiles.del(item.pdfId).catch(() => {});
+        saveStore();
+        renderAll();
+        showToast(`Deleted ${name}.`);
+        return;
+      }
       const edit = e.target.closest('.rec-edit');
       if (edit) { open(edit.dataset.col, Number(edit.dataset.id)); return; }
       const more = e.target.closest('.rec-more');
@@ -2297,11 +2631,404 @@
     });
   })();
 
+  // ---------- calendar (Home) ----------
+  const calState = { y: new Date().getFullYear(), m: new Date().getMonth(), sel: null };
+  function calEvents() {
+    const ev = {};
+    const add = (d, kind, text, goto) => { if (!d) return; (ev[d] = ev[d] || []).push({ kind, text, goto }); };
+    (store.appointments || []).forEach(a => add(a.date, 'appt', (a.time ? fmtTime(a.time) + ' – ' : '') + 'Appointment' + (a.provider ? ' with ' + a.provider : '') + (a.location ? ' · ' + a.location : ''), 'tracker'));
+    (store.logs || []).forEach(l => add(l.date, 'lab', 'Blood counts logged', 'tracker'));
+    (store.testResults || []).forEach(t => add(t.date, 'lab', (t.description || t.type || 'Test result').replace(/ – .*$/, ''), 'tracker'));
+    (store.medications || []).forEach(m => add(m.refillDue, 'refill', 'Refill due: ' + m.name, 'tracker'));
+    (store.vaccines || []).forEach(v => add(v.nextDue, 'vax', 'Vaccine due: ' + v.name, 'tracker'));
+    return ev;
+  }
+  function renderCalendar() {
+    const grid = document.getElementById('cal-grid');
+    if (!grid) return;
+    const { y, m } = calState;
+    document.getElementById('cal-title').textContent = new Date(y, m, 1).toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
+    const ev = calEvents();
+    const first = new Date(y, m, 1).getDay(), days = new Date(y, m + 1, 0).getDate();
+    const iso = d => `${y}-${String(m + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+    let html = ['S', 'M', 'T', 'W', 'T', 'F', 'S'].map(d => `<div class="dow">${d}</div>`).join('');
+    for (let i = 0; i < first; i++) html += '<div class="cal-cell blank"></div>';
+    for (let d = 1; d <= days; d++) {
+      const k = iso(d), list = ev[k] || [];
+      const kinds = [...new Set(list.map(e => e.kind))];
+      html += `<button type="button" class="cal-cell${k === todayIso() ? ' today' : ''}${k === calState.sel ? ' sel' : ''}" data-day="${k}" aria-label="${k}${list.length ? ', ' + list.length + ' items' : ''}"><span class="n">${d}</span><span class="dots">${kinds.map(x => `<i class="dot ${x}"></i>`).join('')}</span></button>`;
+    }
+    grid.innerHTML = html;
+    const dayEl = document.getElementById('cal-day');
+    if (calState.sel && ev[calState.sel]) {
+      dayEl.innerHTML = `<strong>${escapeHtml(fmtDate(calState.sel))}</strong>` + ev[calState.sel].map(e => `<div class="item"><i class="dot ${e.kind}" style="margin-right:6px"></i>${escapeHtml(e.text)}</div>`).join('');
+    } else if (calState.sel) {
+      dayEl.innerHTML = `<strong>${escapeHtml(fmtDate(calState.sel))}</strong><div class="item" style="color:var(--muted)">Nothing on this day.</div>`;
+    } else dayEl.innerHTML = '<span style="color:var(--muted)">Tap a day to see what\'s on it.</span>';
+  }
+  document.addEventListener('click', e => {
+    const nav = e.target.closest('.cal-nav');
+    if (nav) { calState.m += +nav.dataset.cal; if (calState.m < 0) { calState.m = 11; calState.y--; } if (calState.m > 11) { calState.m = 0; calState.y++; } renderCalendar(); return; }
+    const cell = e.target.closest('.cal-cell[data-day]');
+    if (cell) { calState.sel = cell.dataset.day; renderCalendar(); return; }
+    if (e.target.closest('#cal-add-appt')) openRecordEditor('appointments', null, calState.sel ? { date: calState.sel } : null);
+  });
+
+
+  // ---------- added Nov 2026: how I feel, vitals, vaccines, emergency info, visit summary ----------
+  const blank = v => v === null || v === undefined || v === '';
+  SCHEMAS.symptoms.noun = 'check-in';
+  SCHEMAS.symptoms.empty = 'No check-ins yet. Tap "How I feel today" on Home or + Add here.';
+  SCHEMAS.symptoms.fields.splice(2, 0,
+    F('mood', 'How I feel overall', 'select', { options: ['', 'Good', 'OK', 'Not great', 'Bad'] }),
+    F('energy', 'Energy', 'select', { options: ['', 'Good', 'OK', 'Low', 'Very low'] }),
+    F('pain', 'Pain (0 = none, 10 = worst)', 'select', { options: ['', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10'] }),
+    F('sleep', 'Hours of sleep', 'number', { step: '0.5', min: 0 }));
+  (function () {
+    const base = SCHEMAS.symptoms.card;
+    SCHEMAS.symptoms.card = s => {
+      const c = base(s);
+      const extra = [s.mood ? 'Feeling ' + s.mood.toLowerCase() : '', s.energy ? 'Energy ' + s.energy.toLowerCase() : '', !blank(s.pain) ? 'Pain ' + s.pain + '/10' : '', !blank(s.sleep) ? s.sleep + ' h sleep' : ''].filter(Boolean).join(' · ');
+      if (extra) c.sub = [c.sub, extra].filter(Boolean).join(' · ');
+      return c;
+    };
+  })();
+
+  const VITALS = [
+    { key: 'bp', label: 'Blood pressure', unit: 'mmHg' },
+    { key: 'pulse', label: 'Pulse', unit: 'beats/min' },
+    { key: 'weight', label: 'Weight', unit: 'lb' },
+    { key: 'temp', label: 'Temperature', unit: '°F' },
+    { key: 'sugar', label: 'Blood sugar', unit: 'mg/dL' },
+    { key: 'oxygen', label: 'Oxygen', unit: '%' },
+  ];
+  Object.assign(SCHEMAS, {
+    vitals: {
+      idKey: 'vital', noun: 'vitals reading', empty: 'No vitals yet. Tap + Add, or "Log vitals" on Home.',
+      fields: [F('date', 'Date', 'date', { required: true }), F('time', 'Time', 'time'),
+        F('bpSys', 'Blood pressure – top number', 'number', { step: 1, min: 0, placeholder: 'e.g. 120' }), F('bpDia', 'Blood pressure – bottom number', 'number', { step: 1, min: 0, placeholder: 'e.g. 80' }),
+        F('pulse', 'Pulse (beats/min)', 'number', { step: 1, min: 0 }), F('weight', 'Weight (lb)', 'number', { step: '0.1', min: 0 }),
+        F('temp', 'Temperature (°F)', 'number', { step: '0.1' }), F('sugar', 'Blood sugar (mg/dL)', 'number', { step: 1, min: 0 }),
+        F('oxygen', 'Oxygen (%)', 'number', { step: 1, min: 0, placeholder: 'from a finger clip' }), F('notes', 'Notes', 'textarea', { wide: true, placeholder: 'e.g. before breakfast, after a walk' })],
+      sort: (a, b) => byDateDesc(a, b) || ((a.time || '') < (b.time || '') ? 1 : -1),
+      beforeSave: v => (['bpSys', 'bpDia', 'pulse', 'weight', 'temp', 'sugar', 'oxygen'].some(k => !blank(v[k])) ? null : 'Fill in at least one reading.'),
+      card: v => {
+        const s = (txt, warn) => `<span${warn ? ' class="out-of-range"' : ''}>${escapeHtml(txt)}</span>`;
+        const vals = [
+          !blank(v.bpSys) || !blank(v.bpDia) ? s(`BP ${blank(v.bpSys) ? '?' : v.bpSys}/${blank(v.bpDia) ? '?' : v.bpDia}`) : '',
+          !blank(v.pulse) ? s(`Pulse ${v.pulse}`) : '',
+          !blank(v.weight) ? s(`${v.weight} lb`) : '',
+          !blank(v.temp) ? s(`${v.temp}°F`, v.temp >= FEVER_THRESHOLD_F) : '',
+          !blank(v.sugar) ? s(`Sugar ${v.sugar}`) : '',
+          !blank(v.oxygen) ? s(`O₂ ${v.oxygen}%`) : '',
+        ].filter(Boolean).join('');
+        return { title: fmtDate(v.date) + (v.time ? ', ' + fmtTime(v.time) : ''), flag: !blank(v.temp) && v.temp >= FEVER_THRESHOLD_F ? 'Fever' : '',
+          html: vals ? `<div class="rec-vals">${vals}</div>` : '', lines: [v.notes] };
+      },
+    },
+    vaccines: {
+      idKey: 'vaccine', noun: 'vaccine', empty: 'No vaccines added yet.',
+      fields: [F('name', 'Vaccine', 'text', { required: true, list: 'vaccine-names', placeholder: 'e.g. Flu, COVID-19, Shingles' }), F('date', 'Date given', 'date'),
+        F('dose', 'Which dose', 'text', { placeholder: 'e.g. 2nd dose, booster' }), F('where', 'Where', 'text', { placeholder: 'e.g. CVS, doctor\'s office' }),
+        F('nextDue', 'Next one due', 'date'), F('notes', 'Notes', 'textarea', { wide: true, placeholder: 'e.g. lot number, how you felt after' })],
+      sort: byDateDesc,
+      card: v => {
+        const soon = v.nextDue && v.nextDue <= localIso(new Date(Date.now() + 30 * 86400000));
+        return { title: v.name, flag: soon ? (v.nextDue < todayIso() ? 'Overdue ' : 'Due ') + fmtDate(v.nextDue) : '',
+          sub: [v.date ? fmtDate(v.date) : '', v.dose].filter(Boolean).join(', '),
+          lines: [v.where ? 'At ' + v.where : '', v.nextDue && !soon ? 'Next due ' + fmtDate(v.nextDue) : '', v.notes] };
+      },
+    },
+    aboutMe: {
+      idKey: 'aboutMe', noun: 'emergency info', empty: '',
+      fields: [F('fullName', 'Full name', 'text', { wide: true }), F('dob', 'Date of birth', 'date'),
+        F('bloodType', 'Blood type', 'select', { options: ['', 'A+', 'A−', 'B+', 'B−', 'AB+', 'AB−', 'O+', 'O−', 'Not sure'] }),
+        F('language', 'Language', 'text', { placeholder: 'e.g. English' }), F('organDonor', 'Organ donor', 'select', { options: ['', 'Yes', 'No'] }),
+        F('notes', 'Important for responders to know', 'textarea', { wide: true, placeholder: 'e.g. on a blood thinner, has a port, hard of hearing' })],
+      card: a => ({ title: a.fullName || 'My info' }),
+    },
+  });
+
+  // vitals chart
+  let vitalsChartKey = null;
+  function vitalSeries(key) {
+    const rows = [...(store.vitals || [])].sort((a, b) => ((a.date || '') + (a.time || '') < (b.date || '') + (b.time || '') ? -1 : 1));
+    if (key === 'bp') return rows.filter(r => !blank(r.bpSys) || !blank(r.bpDia)).map(r => ({ d: r.date, a: r.bpSys, b: r.bpDia }));
+    return rows.filter(r => !blank(r[key])).map(r => ({ d: r.date, a: r[key] }));
+  }
+  function renderVitals() {
+    renderCollection('vitals');
+    const wrap = document.getElementById('vitals-chart-wrap');
+    if (!wrap) return;
+    const avail = VITALS.filter(v => vitalSeries(v.key).length >= 2);
+    if (!avail.length) { wrap.innerHTML = ''; return; }
+    if (!avail.some(v => v.key === vitalsChartKey)) vitalsChartKey = avail[0].key;
+    const meta = VITALS.find(v => v.key === vitalsChartKey);
+    const pts = vitalSeries(vitalsChartKey).slice(-30);
+    const nums = pts.flatMap(p => [p.a, p.b]).filter(x => !blank(x)).map(Number);
+    let lo = Math.min(...nums), hi = Math.max(...nums);
+    if (lo === hi) { lo -= 1; hi += 1; }
+    const pad = (hi - lo) * 0.15; lo -= pad; hi += pad;
+    const W = 320, H = 150, L = 34, R = 10, T = 10, B = 22;
+    const x = i => L + (pts.length === 1 ? 0 : i * (W - L - R) / (pts.length - 1));
+    const y = v => T + (hi - v) * (H - T - B) / (hi - lo);
+    const line = (k, color) => {
+      const p = pts.map((pt, i) => blank(pt[k]) ? null : [x(i), y(Number(pt[k]))]).filter(Boolean);
+      if (!p.length) return '';
+      return `<polyline fill="none" stroke="${color}" stroke-width="2" stroke-linejoin="round" points="${p.map(q => q.join(',')).join(' ')}"/>` + p.map(q => `<circle cx="${q[0]}" cy="${q[1]}" r="3" fill="${color}"/>`).join('');
+    };
+    const fmt = v => (Math.abs(hi - lo) < 10 ? v.toFixed(1) : Math.round(v));
+    const last = pts[pts.length - 1];
+    const lastTxt = vitalsChartKey === 'bp' ? `${blank(last.a) ? '?' : last.a}/${blank(last.b) ? '?' : last.b}` : last.a;
+    wrap.innerHTML = `<div class="vchart">
+      <select id="vitals-chart-pick" aria-label="Which reading to chart">${avail.map(v => `<option value="${v.key}"${v.key === vitalsChartKey ? ' selected' : ''}>${v.label}</option>`).join('')}</select>
+      <div style="font-size:0.88rem;color:var(--muted);margin-bottom:4px">Latest: <strong style="color:var(--text)">${escapeHtml(String(lastTxt))} ${meta.unit}</strong> on ${escapeHtml(fmtDate(last.d))}${vitalsChartKey === 'bp' ? ' &nbsp;<span style="color:var(--accent)">●</span> top <span style="color:#7a6bb0">●</span> bottom' : ''}</div>
+      <svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${meta.label} over time">
+        <line x1="${L}" y1="${T}" x2="${W - R}" y2="${T}" stroke="var(--border)"/><line x1="${L}" y1="${H - B}" x2="${W - R}" y2="${H - B}" stroke="var(--border)"/>
+        <text class="vlab" x="${L - 4}" y="${T + 4}" text-anchor="end">${fmt(hi)}</text><text class="vlab" x="${L - 4}" y="${H - B + 4}" text-anchor="end">${fmt(lo)}</text>
+        <text class="vlab" x="${L}" y="${H - 6}">${escapeHtml(fmtDate(pts[0].d))}</text><text class="vlab" x="${W - R}" y="${H - 6}" text-anchor="end">${escapeHtml(fmtDate(last.d))}</text>
+        ${line('a', 'var(--accent)')}${vitalsChartKey === 'bp' ? line('b', '#7a6bb0') : ''}
+      </svg></div>`;
+  }
+  document.addEventListener('change', e => { if (e.target && e.target.id === 'vitals-chart-pick') { vitalsChartKey = e.target.value; renderVitals(); } });
+
+  // emergency info card
+  function ageFrom(dob) {
+    if (!dob) return '';
+    const [y, m, d] = dob.split('-').map(Number), n = new Date();
+    let a = n.getFullYear() - y; if (n.getMonth() + 1 < m || (n.getMonth() + 1 === m && n.getDate() < d)) a--;
+    return a >= 0 && a < 130 ? ` (age ${a})` : '';
+  }
+  function iceData() {
+    const me = (store.aboutMe || [])[0] || {};
+    const today = todayIso();
+    const conditions = (store.conditions || []).filter(c => c.status !== 'Resolved');
+    const meds = (store.medications || []).filter(m => !m.end || m.end >= today);
+    const contacts = (store.supportContacts || []).filter(c => c.emergency);
+    return { me, conditions, allergies: store.allergies || [], meds, contacts: contacts.length ? contacts : (store.supportContacts || []).slice(0, 2), doctors: (store.doctors || []).slice(0, 3), insurance: (store.insurance || []).slice(0, 2) };
+  }
+  function iceHtml(print) {
+    const d = iceData(), me = d.me, e = escapeHtml;
+    const tel = p => (print || !telHref(p) ? e(p) : `<a href="${telHref(p)}">${e(p)}</a>`);
+    const sec = (title, body) => body ? `<div class="ice-sec"><h4>${title}</h4>${body}</div>` : '';
+    const list = items => items.length ? items.map(t => `<div>${t}</div>`).join('') : '';
+    return `<h2 id="ice-title">🚨 Emergency medical info</h2>
+      <div class="ice-big">${e(me.fullName || 'Name not added yet')}</div>
+      <div>${[me.dob ? 'Born ' + e(fmtDate(me.dob)) + ageFrom(me.dob) : '', me.bloodType ? 'Blood type ' + e(me.bloodType) : '', me.language ? e(me.language) : '', me.organDonor ? 'Organ donor: ' + e(me.organDonor) : ''].filter(Boolean).join(' · ')}</div>
+      ${sec('Important', me.notes ? `<div>${e(me.notes)}</div>` : '')}
+      ${sec('Health conditions', list(d.conditions.map(c => e(c.name))) || '<div>None listed</div>')}
+      ${sec('Allergies', list(d.allergies.map(a => `<strong>${e(a.name)}</strong>${a.reaction ? ' – ' + e(a.reaction) : ''}${a.severity ? ' (' + e(a.severity) + ')' : ''}`)) || '<div>None listed</div>')}
+      ${sec('Medications', list(d.meds.map(m => `${e(m.name)}${m.dose ? ' ' + e(m.dose) : ''}${m.frequency ? ', ' + e(m.frequency) : ''}`)) || '<div>None listed</div>')}
+      ${sec('Emergency contacts', list(d.contacts.map(c => `${e(c.name)}${c.relationship ? ' (' + e(c.relationship) + ')' : ''}${c.phone ? ' – ' + tel(c.phone) : ''}`)))}
+      ${sec('Doctors', list(d.doctors.map(x => `${e(x.name)}${x.specialty ? ', ' + e(x.specialty) : ''}${x.phone ? ' – ' + tel(x.phone) : ''}`)))}
+      ${sec('Insurance', list(d.insurance.map(i => `${e(i.payer)}${i.memberId ? ', member ID ' + e(i.memberId) : ''}`)))}
+      ${print ? '' : '<div class="ice-tip">Tip: take a screenshot of this screen and set it as your phone\'s lock screen picture, so paramedics can see it without unlocking your phone. Mark someone as an "Emergency contact" in Support so they show up here.</div>'}`;
+  }
+  (function initIce() {
+    const ov = document.getElementById('ice-overlay');
+    if (!ov) return;
+    const close = () => { ov.hidden = true; document.body.classList.remove('modal-open'); };
+    document.getElementById('ice-open').addEventListener('click', () => {
+      document.getElementById('ice-body').innerHTML = iceHtml(false);
+      ov.hidden = false; document.body.classList.add('modal-open');
+      ov.querySelector('.modal').focus();
+    });
+    document.getElementById('ice-close').addEventListener('click', close);
+    ov.addEventListener('click', e => { if (e.target === ov) close(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && !ov.hidden) close(); });
+    document.getElementById('ice-edit').addEventListener('click', () => {
+      close();
+      const me = (store.aboutMe || [])[0];
+      openRecordEditor('aboutMe', me ? me.id : null);
+    });
+    document.getElementById('ice-print').addEventListener('click', () => {
+      document.getElementById('print-area').innerHTML = iceHtml(true);
+      window.print();
+    });
+  })();
+
+  // doctor visit summary
+  function visitSummaryHtml() {
+    const e = escapeHtml, d = iceData(), me = d.me, today = todayIso();
+    const sec = (title, body) => `<h2>${title}</h2>${body || '<p>None listed.</p>'}`;
+    const table = (head, rows) => rows.length ? `<table><thead><tr>${head.map(h => `<th>${h}</th>`).join('')}</tr></thead><tbody>${rows.map(r => `<tr>${r.map(c => `<td>${c}</td>`).join('')}</tr>`).join('')}</tbody></table>` : '';
+    const ul = items => items.length ? `<ul>${items.map(i => `<li>${i}</li>`).join('')}</ul>` : '';
+    const daysAgo = n => localIso(new Date(Date.now() - n * 86400000));
+    // medication check-offs over the last 7 days (today not counted)
+    const log = store.doseLog || {};
+    const week = [1, 2, 3, 4, 5, 6, 7].map(daysAgo);
+    const tracked = week.some(k => log[k] && Object.keys(log[k]).length);
+    const medRows = d.meds.map(m => {
+      let taken = '';
+      if (tracked) { const days = week.filter(k => (!m.start || m.start <= k)); taken = `${days.filter(k => log[k] && log[k][m.id]).length} of ${days.length} days`; }
+      return [e(m.name), e(m.dose || ''), e(m.frequency || '')].concat(tracked ? [taken] : []);
+    });
+    const labs = [...(store.logs || [])].sort(byDateDesc).slice(0, 3);
+    const v = (l, k) => blank(l[k]) ? '' : `${e(l[k])}${inRange(k, l[k]) ? '' : ' *'}`;
+    const vit = [...(store.vitals || [])].sort(SCHEMAS.vitals.sort).slice(0, 5);
+    const feel = [...(store.symptoms || [])].filter(s => (s.date || '') >= daysAgo(14)).sort(SCHEMAS.symptoms.sort);
+    const tests = [...(store.testResults || [])].filter(t => !t.pdfId && t.type !== 'Lab / bloodwork').sort(byDateDesc).slice(0, 3);
+    const qs = (store.myQuestions || []).filter(q => !q.checked);
+    return `<h1>Visit summary${me.fullName ? ' – ' + e(me.fullName) : ''}</h1>
+      <div class="print-meta">${me.dob ? 'Born ' + e(fmtDate(me.dob)) + ' · ' : ''}Printed ${e(fmtDate(today))} · ${e(document.title)}</div>
+      ${sec('Health conditions', ul(d.conditions.map(c => e(c.name) + (c.since ? ' (since ' + e(fmtDate(c.since)) + ')' : ''))))}
+      ${sec('Allergies', ul(d.allergies.map(a => `${e(a.name)}${a.reaction ? ' – ' + e(a.reaction) : ''}${a.severity ? ' (' + e(a.severity) + ')' : ''}`)))}
+      ${sec('Current medications', table(['Medication', 'Dose', 'How I take it'].concat(tracked ? ['Taken, last 7 days'] : []), medRows))}
+      ${sec('Latest blood counts', labs.length ? table(['Date', 'WBC', 'ANC', 'Platelets', 'Hemoglobin'], labs.map(l => [e(fmtDate(l.date)), v(l, 'wbc'), v(l, 'anc'), v(l, 'platelets'), v(l, 'hemoglobin')])) + '<p style="font-size:0.8rem">* outside the usual range</p>' : '')}
+      ${sec('Recent vitals', table(['Date', 'BP', 'Pulse', 'Weight', 'Temp', 'Sugar', 'O₂'], vit.map(x => [e(fmtDate(x.date)), !blank(x.bpSys) || !blank(x.bpDia) ? `${blank(x.bpSys) ? '?' : e(x.bpSys)}/${blank(x.bpDia) ? '?' : e(x.bpDia)}` : '', e(x.pulse ?? ''), blank(x.weight) ? '' : e(x.weight) + ' lb', blank(x.temp) ? '' : e(x.temp) + '°F', e(x.sugar ?? ''), blank(x.oxygen) ? '' : e(x.oxygen) + '%'])))}
+      ${sec('How I\'ve been feeling (last 2 weeks)', table(['Date', 'Overall', 'Energy', 'Pain', 'Sleep', 'Temp', 'Symptoms / notes'], feel.map(s => [e(fmtDate(s.date)), e(s.mood || ''), e(s.energy || ''), blank(s.pain) ? '' : e(s.pain) + '/10', blank(s.sleep) ? '' : e(s.sleep) + ' h', blank(s.temp) ? '' : e(s.temp) + '°F', e([s.symptoms, s.notes].filter(Boolean).join(' – '))])))}
+      ${tests.length ? sec('Recent tests', ul(tests.map(t => `${e(fmtDate(t.date))}: ${e(t.description || t.type || 'Test')}${t.result ? ' – ' + e(String(t.result).slice(0, 200)) : ''}`))) : ''}
+      ${sec('My questions', qs.length ? qs.map(q => `<div class="print-item"><span class="print-box">☐</span><span>${e(q.text)}</span></div>`).join('') : '')}
+      <h2>Notes from this visit</h2><div style="height:110px;border:1px solid #bbb"></div>`;
+  }
+  (function initVisitSummary() {
+    const btn = document.getElementById('visit-summary-btn');
+    if (!btn) return;
+    btn.addEventListener('click', () => {
+      document.getElementById('print-area').innerHTML = visitSummaryHtml();
+      window.print();
+    });
+  })();
+
+
+  // ---------- search (added Nov 2026) ----------
+  const SEARCH_LABELS = { allergies: 'Allergy', conditions: 'Health condition', medications: 'Medication', logs: 'Blood counts', testResults: 'Test result', symptoms: 'How I feel', appointments: 'Appointment', insurance: 'Insurance', pharmacies: 'Pharmacy', doctors: 'Doctor', visits: 'Visit', caseManagers: 'Case manager', supportContacts: 'Support contact', orgs: 'Organization', quickLinks: 'Quick link', places: 'Place', vitals: 'Vitals', vaccines: 'Vaccine', aboutMe: 'Emergency info' };
+  function buildSearchIndex() {
+    const out = [];
+    const flat = v => (v == null ? '' : typeof v === 'object' ? Object.values(v).map(flat).join(' ') : String(v));
+    const clip = s => String(s || '').replace(/\s+/g, ' ').trim();
+    Object.keys(SCHEMAS).forEach(col => {
+      (store[col] || []).forEach(it => {
+        let c = {};
+        try { c = SCHEMAS[col].card(it) || {}; } catch (e) { /* ignore */ }
+        const labels = (col === 'logs' || col === 'vitals') ? SCHEMAS[col].fields.filter(f => it[f.key] !== '' && it[f.key] != null).map(f => f.label).join(' ') + (col === 'logs' ? ' blood counts labs' : '') : '';
+        const text = Object.entries(it).filter(([k]) => !/(^id$|Id$|^pdf)/.test(k)).map(([, v]) => flat(v)).join(' ') + ' ' + clip(c.title) + ' ' + (SEARCH_LABELS[col] || col) + ' ' + labels;
+        const sub = clip(c.sub) || (it.date ? fmtDate(it.date) : '');
+        out.push({ kind: 'rec', col, id: it.id, label: SEARCH_LABELS[col] || col, title: clip(c.title) || SEARCH_LABELS[col] || col, sub, text });
+      });
+    });
+    (store.posts || []).forEach(p => out.push({ kind: 'note', id: p.id, label: 'My note', title: clip(p.title) || 'Note', sub: clip(p.body), text: (p.title || '') + ' ' + (p.body || '') + ' note' }));
+    (store.myQuestions || []).forEach(q => out.push({ kind: 'q', label: 'Question for my doctor', title: clip(q.text), sub: '', text: (q.text || '') + ' question doctor' }));
+    const types = typeof LYMPHOMA_TYPES !== 'undefined' ? LYMPHOMA_TYPES : typeof LEUKEMIA_TYPES !== 'undefined' ? LEUKEMIA_TYPES : [];
+    types.forEach((t, idx) => out.push({ kind: 'edu', idx, label: 'Helpful Info', title: t.name, sub: t.summary, parts: (t.treatments || []).flatMap(c => c.examples.map(x => c.category + ': ' + x)),
+      text: [t.code, t.name, t.onset, t.cellLine, t.who, t.summary, ...(t.treatments || []).flatMap(c => [c.category, ...c.examples])].join(' ') }));
+    if (typeof GLOSSARY !== 'undefined') GLOSSARY.forEach(([term, def]) => out.push({ kind: 'gloss', term, label: 'Glossary', title: term, sub: def, full: true, text: term + ' ' + def + ' glossary meaning' }));
+    document.querySelectorAll('#view-education .card').forEach(el => {
+      const k = el.querySelector('.kicker'), p = el.querySelector('p');
+      if (k) out.push({ kind: 'el', el, label: 'Helpful Info', title: clip(k.textContent), sub: clip(p && p.textContent), text: clip(el.textContent) });
+    });
+    document.querySelectorAll('#outreach-list > div').forEach(el => {
+      const name = el.firstElementChild;
+      out.push({ kind: 'el', el, label: 'Support program', title: clip(name && name.textContent), sub: clip(el.textContent).slice(clip(name && name.textContent).length), text: clip(el.textContent) });
+    });
+    return out;
+  }
+  function searchHighlight(s, words) {
+    let h = escapeHtml(s);
+    words.forEach(w => { if (w.length > 0) h = h.replace(new RegExp('(' + escapeHtml(w).replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi'), '<mark>$1</mark>'); });
+    return h;
+  }
+  function searchSnippet(item, words) {
+    const s = item.sub || '';
+    if (item.parts && !words.some(w => s.toLowerCase().includes(w))) {
+      const hit = item.parts.find(x => words.some(w => x.toLowerCase().includes(w)));
+      if (hit) return hit;
+    }
+    if (item.full || s.length <= 140) return s;
+    const low = s.toLowerCase();
+    const at = words.map(w => low.indexOf(w)).filter(i => i >= 0).sort((a, b) => a - b)[0];
+    if (at === undefined || at < 90) return s.slice(0, 140).replace(/\s+\S*$/, '') + '…';
+    return '…' + s.slice(Math.max(0, at - 50), at + 90).replace(/^\S*\s/, '').replace(/\s+\S*$/, '') + '…';
+  }
+  let searchItems = [], searchShown = [];
+  function webSearchHtml(raw) {
+    const q = encodeURIComponent(raw);
+    const g = extra => `https://www.google.com/search?q=${encodeURIComponent((extra ? extra + ' ' : '') + raw)}`;
+    const cancer = typeof LYMPHOMA_TYPES !== 'undefined' || typeof LEUKEMIA_TYPES !== 'undefined';
+    return `<div class="sr-web"><div class="sr-web-title">Search the internet</div>
+      <a href="https://www.google.com/search?q=${q}" target="_blank" rel="noopener">🌐 <span>Search Google for "${escapeHtml(raw)}"</span></a>
+      <a href="${g('site:medlineplus.gov')}" target="_blank" rel="noopener">🩺 <span>Search MedlinePlus<small>U.S. government health info in plain language</small></span></a>
+      ${cancer ? `<a href="${g('site:cancer.gov')}" target="_blank" rel="noopener">🎗️ <span>Search cancer.gov<small>National Cancer Institute</small></span></a>` : ''}
+      <div class="search-hint" style="padding:4px 2px 0;font-size:0.8rem">Opens in your browser. Only the words you typed are sent, never your health records.</div></div>`;
+  }
+  function runSearch() {
+    const input = document.getElementById('search-input');
+    const box = document.getElementById('search-results');
+    const q = input.value.trim().toLowerCase();
+    if (!q) {
+      box.innerHTML = `<div class="search-hint">Type a word to find it anywhere in the app — a medication, a doctor's name, "platelets", "flu shot", a note${typeof GLOSSARY !== 'undefined' ? ', or a term from Helpful Info' : ''}. Tap a result to go right to it.</div>`;
+      searchShown = [];
+      return;
+    }
+    const words = q.split(/\s+/).filter(Boolean);
+    searchShown = searchItems
+      .filter(it => { const t = (it.text + ' ' + it.title).toLowerCase(); return words.every(w => t.includes(w)); })
+      .map(it => ({ it, score: (words.every(w => it.title.toLowerCase().includes(w)) ? 0 : 1) + (it.kind === 'rec' || it.kind === 'note' || it.kind === 'q' ? 0 : 0.5) }))
+      .sort((a, b) => a.score - b.score)
+      .slice(0, 60).map(x => x.it);
+    if (!searchShown.length) { box.innerHTML = `<div class="search-hint">Nothing found for "<strong>${escapeHtml(input.value.trim())}</strong>". Try a shorter word or different spelling, or search the internet below.</div>` + webSearchHtml(input.value.trim()); return; }
+    box.innerHTML = `<div class="search-hint" style="padding:8px 2px 2px">${searchShown.length === 60 ? 'First 60' : searchShown.length} result${searchShown.length === 1 ? '' : 's'}</div>` + searchShown.map((it, i) =>
+      `<button type="button" class="sr-item" data-sr="${i}"><div class="sr-kind">${escapeHtml(it.label)}</div><div class="sr-title">${searchHighlight(it.title, words)}</div>${it.sub ? `<div class="sr-sub">${searchHighlight(searchSnippet(it, words), words)}</div>` : ''}</button>`
+    ).join('') + webSearchHtml(input.value.trim());
+  }
+  function flashAndScroll(el) {
+    if (!el) return;
+    setTimeout(() => {
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      el.classList.remove('sr-flash'); void el.offsetWidth; el.classList.add('sr-flash');
+    }, 60);
+  }
+  const viewOf = el => { const v = el && el.closest('.view'); return v ? v.id.replace(/^view-/, '') : null; };
+  function goToSearchResult(it) {
+    closeSearch();
+    if (it.kind === 'rec') {
+      expandedLists.add(it.col);
+      if (it.col === 'logs' || it.col === 'testResults') { pastOpen.add('lab'); pastOpen.add('tests'); }
+      renderAll();
+      const btns = [...document.querySelectorAll(`.rec-edit[data-col="${it.col}"][data-id="${it.id}"]`)];
+      const pick = btns.find(b => !['directory', 'home'].includes(viewOf(b))) || btns.find(b => viewOf(b) !== 'directory') || btns[0];
+      if (pick && viewOf(pick)) { showView(viewOf(pick)); flashAndScroll(pick.closest('.rec-card') || pick.parentElement); }
+      else if (it.col === 'aboutMe' && document.getElementById('ice-open')) { showView('home'); document.getElementById('ice-open').click(); }
+      else if (openRecordEditor) openRecordEditor(it.col, it.id);
+      return;
+    }
+    if (it.kind === 'note') { showView('community'); showCommunityDetail(it.id); window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
+    if (it.kind === 'q') { const el = document.getElementById('myq-list-wrap'); if (viewOf(el)) showView(viewOf(el)); flashAndScroll(el); return; }
+    if (it.kind === 'edu') { showView('education'); flashAndScroll(document.querySelectorAll('#education-types > .panel')[it.idx]); return; }
+    if (it.kind === 'gloss') { showView('education'); const dt = [...document.querySelectorAll('#glossary-list dt')].find(d => d.textContent === it.term); flashAndScroll(dt || document.getElementById('glossary-list')); return; }
+    if (it.kind === 'el') { if (viewOf(it.el)) showView(viewOf(it.el)); flashAndScroll(it.el); }
+  }
+  function openSearch() {
+    searchItems = buildSearchIndex();
+    const ov = document.getElementById('search-overlay');
+    ov.hidden = false; document.body.classList.add('modal-open');
+    const input = document.getElementById('search-input');
+    runSearch();
+    setTimeout(() => { input.focus(); input.select(); }, 30);
+  }
+  function closeSearch() {
+    document.getElementById('search-overlay').hidden = true;
+    document.body.classList.remove('modal-open');
+  }
+  (function initSearch() {
+    const ov = document.getElementById('search-overlay');
+    if (!ov) return;
+    document.getElementById('search-open').addEventListener('click', openSearch);
+    document.getElementById('search-close').addEventListener('click', closeSearch);
+    document.getElementById('search-input').addEventListener('input', runSearch);
+    document.getElementById('search-input').addEventListener('keydown', e => { if (e.key === 'Enter' && searchShown.length) { e.preventDefault(); goToSearchResult(searchShown[0]); } });
+    ov.addEventListener('click', e => { if (e.target === ov) closeSearch(); });
+    document.getElementById('search-results').addEventListener('click', e => { const b = e.target.closest('.sr-item'); if (b) goToSearchResult(searchShown[Number(b.dataset.sr)]); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && !ov.hidden) closeSearch(); });
+  })();
+
   function renderAll() {
+    renderCalendar();
     renderHealthSummary();
     renderLogTable(); renderAppointments(); renderInsurance(); renderDoctors(); renderVisits(); renderSymptoms();
     renderMedications(); renderCaseManagers(); renderPharmacies(); renderSupportContacts(); renderDirectory();
     renderTestResults(); renderRecentResults(); renderDueToday();
+    renderVitals(); renderCollection('vaccines');
   }
 
 
@@ -2539,7 +3266,7 @@
         text = await pdfToText(await file.arrayBuffer());
       } catch (e) {
         console.error('pdf read failed', e);
-        status.textContent = "Couldn't read that PDF. Make sure it's the lab report file itself, and that you're online the first time you use this. You can also copy the results and paste them in Add from email below.";
+        status.textContent = "Couldn't read that PDF. Make sure it's the lab report file itself, and that you're online the first time you use this. You can also copy the results and paste them in Add from email on Home.";
         return;
       }
       if (!text.trim()) { status.textContent = "This PDF looks like a scanned picture, so there's no text to read. Type the numbers in with + Add under Log history / Lab work instead."; return; }
@@ -2551,11 +3278,11 @@
       const date = v.date || todayIso();
       await saveFullReport({ text, rows, date, source: v.source, name: /^(shared report|text)$/i.test(name || '') ? '' : name, blob });
       const found = ['wbc', 'anc', 'platelets', 'hemoglobin'].filter(k => v[k] !== undefined);
-      const saved = `Saved the whole report${rows.length ? ` (${rows.length} results)` : ''} under My Health → Test results.`;
+      const saved = `Saved the whole report${rows.length ? ` (${rows.length} results)` : ''} under My Health → Lab work.`;
       if (found.length) {
         // Save the counts straight to the chart. Same date already there? Overwrite it instead of adding a duplicate.
         ensureCollection('logs');
-        const note = `From ${v.source ? v.source + ' ' : ''}report (full report in Test results)`;
+        const note = `From ${v.source ? v.source + ' ' : ''}report (full report in Lab work)`;
         let entry = store.logs.find(l => l.date === date);
         const replaced = !!entry;
         if (!entry) { entry = { id: store.nextIds.log++, date, wbc: null, anc: null, platelets: null, hemoglobin: null, symptoms: '', notes: '' }; store.logs.push(entry); }
@@ -2639,6 +3366,7 @@
   })();
 
   // ---------- init ----------
+  renderCalendar();
   renderHealthSummary();
   { const erDate = document.getElementById('er-date'); if (erDate && !erDate.value) erDate.valueAsDate = new Date(); }
   renderLogTable();
@@ -2673,7 +3401,7 @@
     history.replaceState(null, '', location.pathname);
     try {
       const cache = await caches.open('lc-shared');
-      const goHome = () => { const b = document.querySelector('.tab-btn[data-view="home"]'); if (b) b.click(); const p = document.getElementById('labpdf-panel'); if (p) p.scrollIntoView({ behavior: 'smooth' }); };
+      const goHome = () => { const b = document.querySelector('.tab-btn[data-view="tracker"]'); if (b) b.click(); const p = document.getElementById('labpdf-panel'); if (p) p.scrollIntoView({ behavior: 'smooth' }); };
       const fileRes = await cache.match('shared-file');
       const textRes = await cache.match('shared-text');
       await cache.delete('shared-file'); await cache.delete('shared-text');
@@ -2686,7 +3414,7 @@
         window.handleLabText(await textRes.text(), 'text');
       } else {
         const st = document.getElementById('labpdf-status');
-        if (st) st.textContent = "Something was shared, but no PDF came through. Try sharing again, or use Choose lab report PDF.";
+        if (st) st.textContent = "Something was shared, but no PDF came through. Try sharing again, or tap + Add lab report (PDF) under My Health → Lab work.";
       }
     } catch (e) { console.error('shared pickup failed', e); }
   })();
